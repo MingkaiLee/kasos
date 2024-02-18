@@ -1,0 +1,82 @@
+<mxfile host="65bd71144e">
+    <diagram id="gU8v1DyOsQetkBNwnoig" name="第 1 页">
+        <mxGraphModel dx="1041" dy="588" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+                    <mxGeometry x="260" y="140" width="450" height="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" style="edgeStyle=orthogonalEdgeStyle;elbow=vertical;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;strokeColor=#000000;fontColor=#000000;startArrow=classic;startFill=1;" edge="1" parent="1" source="2" target="7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="Prometheus" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#1ba1e2;fontColor=#ffffff;strokeColor=#006EAF;" vertex="1" parent="1">
+                    <mxGeometry x="330" y="210" width="90" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="&lt;font color=&quot;#000000&quot;&gt;数据收集模块&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="435" y="340" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#000000;fontColor=#000000;startArrow=classic;startFill=1;elbow=vertical;" edge="1" parent="1" source="5" target="7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="&lt;font color=&quot;#000000&quot;&gt;配置文件管理服务(HTTP服务)&lt;/font&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;gradientColor=#ffd966;strokeColor=#d6b656;" vertex="1" parent="1">
+                    <mxGeometry x="535" y="220" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.twoWayArrow;dy=0.6;dx=35;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="430" y="250" width="100" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="&lt;font color=&quot;#000000&quot;&gt;Prometheus配置文件&lt;/font&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#cdeb8b;strokeColor=#36393d;" vertex="1" parent="1">
+                    <mxGeometry x="435" y="150" width="90" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="重载配置文件请求" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="425" y="270" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="" style="shape=actor;whiteSpace=wrap;html=1;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="760" y="230" width="40" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="集群管理员" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="740" y="300" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.twoWayArrow;dy=0.6;dx=35;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="655" y="250" width="100" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="查询/修改配置" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="655" y="210" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="只读" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="350" y="150" width="50" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="读写" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="559.5" y="150" width="50" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="&lt;font color=&quot;#000000&quot;&gt;Service Pods&lt;/font&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#fad9d5;strokeColor=#ae4132;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="170" width="140" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.twoWayArrow;dy=0.6;dx=35;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="210" y="250" width="100" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="拉取监控数据" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="210" y="220" width="100" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+                    <mxGeometry x="245" y="390" width="300" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="&lt;font color=&quot;#000000&quot;&gt;时序建模模块&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+                    <mxGeometry x="270" y="460" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="&lt;font color=&quot;#000000&quot;&gt;模型应用模块&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+                    <mxGeometry x="405" y="460" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="其他模块" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="360" y="540" width="70" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="" style="html=1;shadow=0;dashed=0;align=center;verticalAlign=middle;shape=mxgraph.arrows2.twoWayArrow;dy=0.6;dx=35;fontColor=#000000;rotation=90;" vertex="1" parent="1">
+                    <mxGeometry x="325" y="370" width="100" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="数据查询" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#000000;" vertex="1" parent="1">
+                    <mxGeometry x="295" y="340" width="70" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

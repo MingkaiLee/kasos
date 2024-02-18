@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prometheus
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.30.3
+          ports:
+            - name: web
+              containerPort: 9090
+          volumeMounts:
+            - name: prometheus-data
+              mountPath: /prometheus
+      volumes:
+        - name: prometheus-data
+          emptyDir: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: prometheus
+spec:
+  selector:
+    app: prometheus
+  ports:
+    - name: web
+      protocol: TCP
+      port: 80
+      targetPort: 9090
+  type: NodePort
