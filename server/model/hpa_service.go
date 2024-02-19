@@ -1,9 +1,7 @@
 package model
 
 import (
-	"sort"
-	"strings"
-
+	"github.com/MingkaiLee/kasos/server/util"
 	"gorm.io/gorm"
 )
 
@@ -25,25 +23,11 @@ func (HpaService) TableName() string {
 func HpaServiceCreate(serviceName string, tags map[string]string, modelId uint) error {
 	h := &HpaService{
 		ServiceName: serviceName,
-		Tags:        convertTags(tags),
+		Tags:        util.ConvertTags(tags),
 		Status:      statusTesting,
 		ModelId:     modelId,
 	}
 	return db.Create(h).Error
-}
-
-func convertTags(tags map[string]string) string {
-	kvs := make([]string, 0, len(tags))
-	for t := range tags {
-		kvs = append(kvs, t)
-	}
-	sort.Strings(kvs)
-	for i := range kvs {
-		kvs[i] = kvs[i] + "=" + tags[kvs[i]]
-	}
-	tagsStr := strings.Join(kvs, "&")
-
-	return tagsStr
 }
 
 func HpaServiceRecordError(serviceName string, errorInfo string) error {
@@ -60,13 +44,17 @@ func HpaServiceChangeModel(serviceName string, modelId uint) error {
 
 func HpaServiceGet(serviceName string) (*HpaService, error) {
 	h := &HpaService{}
-	err := db.Where("service_name = ?", serviceName).First(h).Error
+	err := db.Where("service_name = ?", serviceName).Preload("HpaModel", func(db *gorm.DB) *gorm.DB {
+		return db.Select("model_name")
+	}).First(h).Error
 	return h, err
 }
 
 func HpaServiceList() ([]HpaService, error) {
 	h := make([]HpaService, 0)
-	err := db.Find(&h).Error
+	err := db.Where("status = ?", statusOk).Preload("HpaModel", func(db *gorm.DB) *gorm.DB {
+		return db.Select("model_name")
+	}).Order("id").Find(&h).Error
 	return h, err
 }
 

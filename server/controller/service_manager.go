@@ -7,7 +7,6 @@ import (
 )
 
 func FindServices(ctx context.Context, c *app.RequestContext) {
-
 }
 
 func RegisterService(ctx context.Context, c *app.RequestContext) {

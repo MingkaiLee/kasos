@@ -7,7 +7,7 @@ import (
 type HpaModel struct {
 	gorm.Model
 	ModelName   string `gorm:"column:model_name"`
-	ModelStatus string `gorm:"column:model_status"`
+	Status      string `gorm:"column:status"`
 	TrainScript string `gorm:"column:train_script"`
 	InferScript string `gorm:"column:infer_script"`
 	ErrorInfo   string `gorm:"column:error_info"`
@@ -20,7 +20,7 @@ func (HpaModel) TableName() string {
 func HpaModelCreate(modelName string, trainScript string, inferScript string) error {
 	h := &HpaModel{
 		ModelName:   modelName,
-		ModelStatus: statusTesting,
+		Status:      statusTesting,
 		TrainScript: trainScript,
 		InferScript: inferScript,
 	}
@@ -28,11 +28,11 @@ func HpaModelCreate(modelName string, trainScript string, inferScript string) er
 }
 
 func HpaModelRecordOk(modelName string) error {
-	return db.Model(&HpaModel{}).Where("model_name = ?", modelName).Update("model_status", statusOk).Error
+	return db.Model(&HpaModel{}).Where("model_name = ?", modelName).Update("status", statusOk).Error
 }
 
 func HpaModelRecordError(modelName string, errorInfo string) error {
-	return db.Model(&HpaModel{}).Where("model_name = ?", modelName).Update("model_status", statusError).Update("error_info", errorInfo).Error
+	return db.Model(&HpaModel{}).Where("model_name = ?", modelName).Update("status", statusError).Update("error_info", errorInfo).Error
 }
 
 func HpaModelGet(modelName string) (*HpaModel, error) {
@@ -41,9 +41,15 @@ func HpaModelGet(modelName string) (*HpaModel, error) {
 	return h, err
 }
 
+func HpaModelGetID(modelName string) (uint, error) {
+	h := &HpaModel{}
+	err := db.Model(&HpaModel{}).Where("model_name = ?", modelName).Select("id").First(h).Error
+	return h.ID, err
+}
+
 func HpaModelList() ([]HpaModel, error) {
 	var h []HpaModel
-	err := db.Find(&h).Error
+	err := db.Where("status = ?", statusOk).Order("id").Find(&h).Error
 	return h, err
 }
 
