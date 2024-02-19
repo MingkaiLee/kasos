@@ -1,20 +1,17 @@
 package main
 
 import (
-	"context"
-
-	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/cloudwego/hertz/pkg/common/utils"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/MingkaiLee/kasos/server/client"
+	"github.com/MingkaiLee/kasos/server/config"
+	"github.com/MingkaiLee/kasos/server/controller"
+	"github.com/MingkaiLee/kasos/server/model"
 )
 
 func main() {
-	h := server.Default()
+	// Init by specified order
+	config.InitConf()
+	model.InitModel()
+	client.InitClient()
 
-	h.GET("/ping", func(c context.Context, ctx *app.RequestContext) {
-		ctx.JSON(consts.StatusOK, utils.H{"message": "pong"})
-	})
-
-	h.Spin()
+	controller.H.Spin()
 }
