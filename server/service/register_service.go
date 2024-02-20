@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/MingkaiLee/kasos/server/client"
 	"github.com/MingkaiLee/kasos/server/model"
 )
 
@@ -42,7 +43,12 @@ func RegisterService(ctx context.Context, content []byte) (response *RegisterSer
 
 	// TODO: send stress test request to hpa-executor
 
-	// TODO: add service info to Prometheus ConfigMap
+	// TODO: create a Prometheus ServiceMonitor
+	err = client.CreateMonitorService(ctx, req.Name, req.Tags)
+	if err != nil {
+		response.Message = err.Error()
+		return
+	}
 
 	response.Accepted = true
 	return
