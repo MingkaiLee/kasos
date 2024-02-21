@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/MingkaiLee/kasos/server/util"
 	monitorv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	corev1 "k8s.io/api/core/v1"
@@ -24,14 +25,17 @@ func InitK8sClient() {
 	var err error
 	conf, err := rest.InClusterConfig()
 	if err != nil {
+		util.LogErrorf("panic: %v", err)
 		panic(err)
 	}
 	k8sClient, err = kubernetes.NewForConfig(conf)
 	if err != nil {
+		util.LogErrorf("panic: %v", err)
 		panic(err)
 	}
 	monitorClient, err = versioned.NewForConfig(conf)
 	if err != nil {
+		util.LogErrorf("panic: %v", err)
 		panic(err)
 	}
 }

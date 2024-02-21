@@ -17,6 +17,7 @@ type HpaService struct {
 func FindHpaService(ctx context.Context, serviceName string) (response *HpaService, err error) {
 	svc, err := model.HpaServiceGet(serviceName)
 	if err != nil {
+		util.LogErrorf("failed to get hpa service: %s, error: %v", serviceName, err)
 		return nil, err
 	}
 	response.Name = &svc.ServiceName

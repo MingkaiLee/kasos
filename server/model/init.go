@@ -2,6 +2,7 @@ package model
 
 import (
 	"github.com/MingkaiLee/kasos/server/config"
+	"github.com/MingkaiLee/kasos/server/util"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -19,6 +20,7 @@ func InitModel() {
 
 	db, err = gorm.Open(mysql.Open(config.DSN), &gorm.Config{})
 	if err != nil {
+		util.LogErrorf("panic: %v", err)
 		panic(err)
 	}
 }
