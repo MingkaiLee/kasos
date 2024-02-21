@@ -2,9 +2,10 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/MingkaiLee/kasos/server/model"
+	"github.com/MingkaiLee/kasos/server/util"
+	jsoniter "github.com/json-iterator/go"
 )
 
 type ReportThreshRequest struct {
@@ -16,19 +17,22 @@ type ReportThreshRequest struct {
 
 func ReportThresh(ctx context.Context, content []byte) (err error) {
 	var req ReportThreshRequest
-	err = json.Unmarshal(content, &req)
+	err = jsoniter.Unmarshal(content, &req)
 	if err != nil {
+		util.LogErrorf("unmarshal error: %v", err)
 		return
 	}
 
 	if req.OK {
 		err = model.HpaServiceRecordThreshQPS(req.ServiceName, req.ThreshQPS)
 		if err != nil {
+			util.LogErrorf("report thresh error: %v", err)
 			return
 		}
 	} else {
 		err = model.HpaServiceRecordError(req.ServiceName, req.ErrorInfo)
 		if err != nil {
+			util.LogErrorf("report error error: %v", err)
 			return
 		}
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/MingkaiLee/kasos/server/util"
 	jsoniter "github.com/json-iterator/go"
 )
 
@@ -26,10 +27,12 @@ func initDBConf() {
 
 	d, err := os.ReadFile(dbConfFile)
 	if err != nil {
+		util.LogErrorf("panic: %v", err)
 		panic(err)
 	}
 	err = jsoniter.Unmarshal(d, &conf)
 	if err != nil {
+		util.LogErrorf("panic: %v", err)
 		panic(err)
 	}
 
