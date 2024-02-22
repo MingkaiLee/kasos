@@ -8,9 +8,7 @@ import (
 )
 
 var (
-	HpaExecutorUrl string
-	TrainerUrl     string
-	InferModuleUrl string
+	ServerUrl string
 )
 
 const urlConfFile = "/etc/config/url.json"
@@ -36,7 +34,5 @@ func initUrlConf() {
 		util.LogErrorf("panic: %v", err)
 		panic(err)
 	}
-	HpaExecutorUrl = conf.HpaExecutorUrl
-	TrainerUrl = conf.TrainerUrl
-	InferModuleUrl = conf.InferModuleUrl
+	ServerUrl = conf.ServerUrl
 }
