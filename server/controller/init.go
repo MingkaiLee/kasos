@@ -10,10 +10,7 @@ func InitController() {
 	// init controller
 	H = server.Default()
 
-	// service-manager api
-	serviceManager := H.Group("/service-manager")
-	serviceManager.GET("/list")
-	serviceManager.GET("/find", FindServices)
+	initServiceManager()
 
 	// model-manager api
 	modelManager := H.Group("/model-manager")

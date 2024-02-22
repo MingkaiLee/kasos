@@ -2,11 +2,11 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/MingkaiLee/kasos/server/client"
 	"github.com/MingkaiLee/kasos/server/model"
 	"github.com/MingkaiLee/kasos/server/util"
+	jsoniter "github.com/json-iterator/go"
 )
 
 type RegisterServiceRequest struct {
@@ -22,7 +22,8 @@ type RegisterServiceResponse struct {
 
 func RegisterService(ctx context.Context, content []byte) (response *RegisterServiceResponse, err error) {
 	var req RegisterServiceRequest
-	err = json.Unmarshal(content, &req)
+	err = jsoniter.Unmarshal(content, &req)
+	response = new(RegisterServiceResponse)
 	if err != nil {
 		util.LogErrorf("failed to unmarshal request, error: %v", err)
 		response.Message = err.Error()

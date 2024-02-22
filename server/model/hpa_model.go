@@ -38,6 +38,9 @@ func HpaModelRecordError(modelName string, errorInfo string) error {
 func HpaModelGet(modelName string) (*HpaModel, error) {
 	h := &HpaModel{}
 	err := db.Where("model_name = ?", modelName).First(h).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
 	return h, err
 }
 

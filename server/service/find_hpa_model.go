@@ -19,6 +19,11 @@ func FindHpaModel(ctx context.Context, modelName string) (response *HpaModel, er
 		util.LogErrorf("failed to get hpa model: %s, error: %s", modelName, err)
 		return
 	}
+	if md == nil {
+		util.LogInfof("hpa model not found: %s", modelName)
+		return
+	}
+	response = new(HpaModel)
 	response.Name = &md.ModelName
 	response.TrainScript = &md.TrainScript
 	response.InferScript = &md.InferScript
