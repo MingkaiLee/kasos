@@ -14,6 +14,7 @@ type ListHpaServicesResponse struct {
 func ListHpaServices(ctx context.Context) (response *ListHpaServicesResponse, err error) {
 	svcs, err := model.HpaServiceList()
 	if err != nil {
+		util.LogErrorf("failed to list hpa services, error: %v", err)
 		return
 	}
 	response.HpaServices = make([]HpaService, len(svcs))

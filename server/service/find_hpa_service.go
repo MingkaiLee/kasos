@@ -18,7 +18,7 @@ func FindHpaService(ctx context.Context, serviceName string) (response *HpaServi
 	svc, err := model.HpaServiceGet(serviceName)
 	if err != nil {
 		util.LogErrorf("failed to get hpa service: %s, error: %v", serviceName, err)
-		return nil, err
+		return
 	}
 	response.Name = &svc.ServiceName
 	response.Tags = util.RevertTags(svc.Tags)
