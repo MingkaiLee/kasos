@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/MingkaiLee/kasos/server/model"
+	"github.com/MingkaiLee/kasos/server/util"
 )
 
 type QueryRegisterResultResponse struct {
@@ -14,6 +15,7 @@ type QueryRegisterResultResponse struct {
 func QueryRegisterResult(ctx context.Context, serviceName string) (response *QueryRegisterResultResponse, err error) {
 	svc, err := model.HpaServiceGet(serviceName)
 	if err != nil {
+		util.LogErrorf("failed to get register result, error: %v", err)
 		return
 	}
 
