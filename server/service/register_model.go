@@ -37,7 +37,7 @@ func RegisterModel(ctx context.Context, content []byte) (response *RegisterModel
 		response.Message = err.Error()
 	}
 
-	// TODO: send a model validation request to trainer
+	// TODO: send a model validation request to infer-module
 
 	response.Accepted = true
 	return
