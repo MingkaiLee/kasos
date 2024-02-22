@@ -47,6 +47,9 @@ func HpaServiceGet(serviceName string) (*HpaService, error) {
 	err := db.Where("service_name = ?", serviceName).Preload("HpaModel", func(db *gorm.DB) *gorm.DB {
 		return db.Select("model_name")
 	}).First(h).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
 	return h, err
 }
 

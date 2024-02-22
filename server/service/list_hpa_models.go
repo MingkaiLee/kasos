@@ -17,6 +17,7 @@ func ListHpaModels(ctx context.Context) (response *ListHpaModelsResponse, err er
 		util.LogErrorf("failed to list hpa models, error: %v", err)
 		return
 	}
+	response = new(ListHpaModelsResponse)
 	response.HpaModels = make([]HpaModel, len(mds))
 	for i := range mds {
 		response.HpaModels[i] = HpaModel{

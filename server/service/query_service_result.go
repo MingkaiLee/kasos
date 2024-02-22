@@ -18,6 +18,11 @@ func QueryRegisterResult(ctx context.Context, serviceName string) (response *Que
 		util.LogErrorf("failed to get register result, error: %v", err)
 		return
 	}
+	response = new(QueryRegisterResultResponse)
+	if svc == nil {
+		response.ErrorInfo = "unknown service name"
+		return
+	}
 
 	response.Status = svc.Status
 	response.ErrorInfo = svc.ErrorInfo

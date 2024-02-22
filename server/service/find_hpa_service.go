@@ -20,6 +20,11 @@ func FindHpaService(ctx context.Context, serviceName string) (response *HpaServi
 		util.LogErrorf("failed to get hpa service: %s, error: %v", serviceName, err)
 		return
 	}
+	if svc == nil {
+		util.LogInfof("hpa service not found: %s", serviceName)
+		return
+	}
+	response = new(HpaService)
 	response.Name = &svc.ServiceName
 	response.Tags = util.RevertTags(svc.Tags)
 	response.ThreshQPS = &svc.ThreshQPS

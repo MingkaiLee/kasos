@@ -17,6 +17,7 @@ func ListHpaServices(ctx context.Context) (response *ListHpaServicesResponse, er
 		util.LogErrorf("failed to list hpa services, error: %v", err)
 		return
 	}
+	response = new(ListHpaServicesResponse)
 	response.HpaServices = make([]HpaService, len(svcs))
 	for i := range svcs {
 		response.HpaServices[i] = HpaService{

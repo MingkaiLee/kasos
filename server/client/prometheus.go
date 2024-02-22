@@ -51,7 +51,7 @@ func FetchSerialData(ctx context.Context, startTime, endTime time.Time, tags map
 		return
 	}
 	if len(warnings) > 0 {
-		util.LogInfof("warnings: %+v")
+		util.LogInfof("warnings: %+v", warnings)
 	}
 	mat, ok := result.(model.Matrix)
 	if !ok {

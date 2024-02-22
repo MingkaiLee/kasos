@@ -14,6 +14,7 @@ type DeleteServiceResponse struct {
 
 func DeleteService(ctx context.Context, serviceName string) (response *DeleteServiceResponse, err error) {
 	err = model.HpaServiceDelete(serviceName)
+	response = new(DeleteServiceResponse)
 	if err != nil {
 		util.LogErrorf("delete service error: %v", err)
 		response.Message = err.Error()
