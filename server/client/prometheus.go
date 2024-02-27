@@ -63,7 +63,7 @@ func FetchSerialData(ctx context.Context, startTime, endTime time.Time, tags map
 		d := make([]SerialDataPoint, 0, len(stream.Values))
 		for _, v := range stream.Values {
 			d = append(d, SerialDataPoint{
-				Timestamp: v.Timestamp.Time().Format(time.RFC3339),
+				Timestamp: v.Timestamp.Time().Format(time.DateTime),
 				Value:     float64(v.Value),
 			})
 			data[stream.Metric.String()] = d
