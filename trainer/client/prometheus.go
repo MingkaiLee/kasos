@@ -36,7 +36,7 @@ func InitPrometheusClient() {
 	}
 }
 
-func FetchSerialData(ctx context.Context, startTime, endTime time.Time, serviceName string) (data map[string][]SerialDataPoint, err error) {
+func FetchSerialData(ctx context.Context, startTime, endTime time.Time, serviceName string) (data []SerialDataPoint, err error) {
 	v1api := v1.NewAPI(prometheusClient)
 	rng := v1.Range{
 		Start: startTime,
@@ -57,16 +57,19 @@ func FetchSerialData(ctx context.Context, startTime, endTime time.Time, serviceN
 		util.LogErrorf("result is not matrix, result type: %s", result.Type().String())
 		return
 	}
-	data = make(map[string][]SerialDataPoint)
-	for _, stream := range mat {
-		d := make([]SerialDataPoint, 0, len(stream.Values))
-		for _, v := range stream.Values {
-			d = append(d, SerialDataPoint{
-				Timestamp: v.Timestamp.Time().Format(time.RFC3339),
-				Value:     float64(v.Value),
-			})
-			data[stream.Metric.String()] = d
-		}
+	if len(mat) == 0 {
+		util.LogErrorf("result matrix is empty")
+		return
 	}
+
+	data = make([]SerialDataPoint, len(mat[0].Values))
+
+	for _, v := range mat[0].Values {
+		data = append(data, SerialDataPoint{
+			Timestamp: v.Timestamp.Time().Format(time.DateTime),
+			Value:     float64(v.Value),
+		})
+	}
+
 	return
 }
