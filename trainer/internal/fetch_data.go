@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"sort"
 	"sync"
 	"time"
 
@@ -19,6 +20,12 @@ type FetchDataWorker struct {
 }
 
 func NewFetchDataWorker(workerNumber int, serviceName string, date time.Time) *FetchDataWorker {
+	if workerNumber < 1 {
+		workerNumber = 1
+	}
+	if workerNumber > 24 {
+		workerNumber = 24
+	}
 	return &FetchDataWorker{
 		workerNumber: workerNumber,
 		serviceName:  serviceName,
@@ -48,15 +55,19 @@ func serialDataSave(serialData []client.SerialDataPoint, fileName string) (err e
 
 // 合并数据至一个文件中
 func mergeData(finalFileName string, subFiles []string) (err error) {
+	// 排序文件名, 保证数据是有序的
+	sort.Strings(subFiles)
 	return
 }
 
 func (worker *FetchDataWorker) Run() {
 	ctx := context.Background()
 	timeInterval := 24 / worker.workerNumber
-	if timeInterval < 1 {
-		timeInterval = 1
+	if (timeInterval % worker.workerNumber) > 0 {
+		timeInterval++
 	}
+	// 开始时间, 以小时为单位, 0-24
+	startInHour := 0
 	year, month, day := worker.date.Date()
 	finalFileName := fmt.Sprintf("{%s}/{%d}-{%d}-{%d}/{%s}.csv",
 		config.DataDirectory,
@@ -65,13 +76,20 @@ func (worker *FetchDataWorker) Run() {
 	)
 	subFiles := make([]string, 0, worker.workerNumber)
 	var g sync.WaitGroup
-	for i := 0; i < worker.workerNumber; i++ {
+	var mu sync.Mutex
+	for i := 0; startInHour < 24; i++ {
 		g.Add(1)
-		go func(idx int) {
+		st := startInHour
+		et := startInHour + timeInterval
+		if et > 24 {
+			et = 24
+		}
+		startInHour = et
+		go func(start, end, idx int) {
 			defer g.Done()
 			// 并发查询与写文件
-			startTime := worker.date.Add(time.Duration(timeInterval*idx) * time.Hour)
-			endTime := worker.date.Add(time.Duration(timeInterval*(idx+1)) * time.Hour)
+			startTime := worker.date.Add(time.Duration(start) * time.Hour)
+			endTime := worker.date.Add(time.Duration(end) * time.Hour)
 			serialData, err := client.FetchSerialData(ctx, startTime, endTime, worker.serviceName)
 			if err != nil {
 				util.LogErrorf("internal.FetchDataWorker.Run goroutine error: %v", err)
@@ -88,8 +106,10 @@ func (worker *FetchDataWorker) Run() {
 				util.LogErrorf("internal.FetchDataWorker.Run goroutine error: %v", err)
 				return
 			}
+			mu.Lock()
 			subFiles = append(subFiles, fileName)
-		}(i)
+			mu.Unlock()
+		}(st, et, i)
 	}
 	g.Wait()
 	// 合并文件
