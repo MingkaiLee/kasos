@@ -3,6 +3,7 @@ package internal
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"sort"
 	"sync"
@@ -53,14 +54,66 @@ func serialDataSave(serialData []client.SerialDataPoint, fileName string) (err e
 	return
 }
 
-// 合并数据至一个文件中
-func mergeData(finalFileName string, subFiles []string) (err error) {
-	// 排序文件名, 保证数据是有序的
+// 文件按照名称字符排序后, 统一合并到第一个文件中
+func mergeFiles(subFiles []string) (err error) {
+	if len(subFiles) == 0 {
+		err = fmt.Errorf("subFiles is empty")
+		util.LogErrorf("internal.mergeFiles error: %v", err)
+		return
+	}
+	// 排序子文件名, 保证数据是有序的
 	sort.Strings(subFiles)
+	// 将子文件合并, 其他子文件都放入第一个子文件的末尾
+	dst, err := os.OpenFile(subFiles[0], os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		util.LogErrorf("internal.mergeFiles error: %v", err)
+		return
+	}
+	defer dst.Close()
+	for i := 1; i < len(subFiles); i++ {
+		src, e := os.Open(subFiles[i])
+		if e != nil {
+			err = e
+			util.LogErrorf("internal.mergeFiles error: %v", err)
+			return
+		}
+		defer src.Close()
+		_, err = io.Copy(dst, src)
+		if err != nil {
+			util.LogErrorf("internal.mergeFiles error: %v", err)
+			return
+		}
+	}
 	return
 }
 
-func (worker *FetchDataWorker) Run() {
+// 合并数据至一个文件中
+func mergeData(finalFileName string, subFiles []string) (err error) {
+	// 先调用函数合并至第一个文件中
+	err = mergeFiles(subFiles)
+	if err != nil {
+		util.LogErrorf("internal.mergeData error: %v", err)
+		return
+	}
+	// 修改第一个文件的名称
+	err = os.Rename(subFiles[0], finalFileName)
+	if err != nil {
+		util.LogErrorf("internal.mergeData error: %v", err)
+		return
+	}
+	// 删除其他文件
+	for i := 1; i < len(subFiles); i++ {
+		err = os.Remove(subFiles[i])
+		if err != nil {
+			util.LogErrorf("internal.mergeData error: %v", err)
+			return
+		}
+	}
+	return
+}
+
+func (worker *FetchDataWorker) Run() (err error) {
+	util.LogInfof("internal.FetchDataWorker.Run: start to fetch data of service %s", worker.serviceName)
 	ctx := context.Background()
 	timeInterval := 24 / worker.workerNumber
 	if (timeInterval % worker.workerNumber) > 0 {
@@ -106,6 +159,7 @@ func (worker *FetchDataWorker) Run() {
 				util.LogErrorf("internal.FetchDataWorker.Run goroutine error: %v", err)
 				return
 			}
+			// 防止写冲突
 			mu.Lock()
 			subFiles = append(subFiles, fileName)
 			mu.Unlock()
@@ -113,9 +167,11 @@ func (worker *FetchDataWorker) Run() {
 	}
 	g.Wait()
 	// 合并文件
-	err := mergeData(finalFileName, subFiles)
+	err = mergeData(finalFileName, subFiles)
 	if err != nil {
 		util.LogErrorf("internal.FetchDataWorker.Run error: %v", err)
 		return
 	}
+	util.LogInfof("internal.FetchDataWorker.Run: fetch data of service %s done, saved to %s", worker.serviceName, finalFileName)
+	return
 }
