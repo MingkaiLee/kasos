@@ -27,12 +27,12 @@ func NewTrainer(serviceName, modelName string, date time.Time) *Trainer {
 func (t *Trainer) Train() (err error) {
 	// 路径准备
 	year, month, day := t.date.Date()
-	dataPath := fmt.Sprintf("{%s}/{%d}-{%d}-{%d}/{%s}.csv",
+	dataPath := fmt.Sprintf("%s/%d-%d-%d/%s.csv",
 		config.DataDirectory,
 		year, month, day, t.serviceName)
-	scriptPath := fmt.Sprintf("{%s}/train/{%s}.py",
+	scriptPath := fmt.Sprintf("%s/train/%s.py",
 		config.ScriptDirectory, t.modelName)
-	modelPath := fmt.Sprintf("{%s}/{%s}/{%s}",
+	modelPath := fmt.Sprintf("%s/%s/%s",
 		config.ModelDirectory, t.serviceName, t.modelName)
 	// 检查数据是否已准备好
 	dataFileStat, err := os.Stat(dataPath)
