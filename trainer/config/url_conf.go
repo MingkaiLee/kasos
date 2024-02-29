@@ -3,7 +3,7 @@ package config
 import (
 	"os"
 
-	"github.com/MingkaiLee/kasos/server/util"
+	"github.com/MingkaiLee/kasos/trainer/util"
 	jsoniter "github.com/json-iterator/go"
 )
 

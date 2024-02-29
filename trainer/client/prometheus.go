@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/MingkaiLee/kasos/server/util"
+	"github.com/MingkaiLee/kasos/trainer/util"
 	"github.com/prometheus/client_golang/api"
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/prometheus/common/model"
