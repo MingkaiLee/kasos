@@ -43,7 +43,7 @@ func serialDataSave(serialData []client.SerialDataPoint, fileName string) (err e
 	defer fp.Close()
 
 	for i := range serialData {
-		dataRow := fmt.Sprintf("%s\t%.2f\n", serialData[i].Timestamp, serialData[i].Value)
+		dataRow := fmt.Sprintf("%s\t%.4f\n", serialData[i].Timestamp, serialData[i].Value)
 		_, err = fp.WriteString(dataRow)
 		if err != nil {
 			util.LogErrorf("internal.serialDataSave error: %v", err)
@@ -122,7 +122,7 @@ func (worker *FetchDataWorker) Run() (err error) {
 	// 开始时间, 以小时为单位, 0-24
 	startInHour := 0
 	year, month, day := worker.date.Date()
-	finalFileName := fmt.Sprintf("{%s}/{%d}-{%d}-{%d}/{%s}.csv",
+	finalFileName := fmt.Sprintf("%s/%d-%d-%d/%s.csv",
 		config.DataDirectory,
 		year, month, day,
 		worker.serviceName,
@@ -148,7 +148,7 @@ func (worker *FetchDataWorker) Run() (err error) {
 				util.LogErrorf("internal.FetchDataWorker.Run goroutine error: %v", err)
 				return
 			}
-			fileName := fmt.Sprintf("{%s}/{%d}-{%d}-{%d}/{%s}_{%d}.csv",
+			fileName := fmt.Sprintf("%s/%d-%d-%d/%s_%d.csv",
 				config.DataDirectory,
 				year, month, day,
 				worker.serviceName,
