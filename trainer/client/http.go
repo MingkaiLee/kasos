@@ -24,7 +24,7 @@ func InitHTTPClient() {
 }
 
 func CallListHpaServices(ctx context.Context) (response *http.Response, err error) {
-	url := fmt.Sprintf("%s/%s", config.ServerUrl, "service-manager/list")
+	url := fmt.Sprintf("%s/%s", config.ServerUrl, "/service-manager/list")
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		util.LogErrorf("http.NewRequest error: %s", err)
@@ -36,7 +36,7 @@ func CallListHpaServices(ctx context.Context) (response *http.Response, err erro
 }
 
 func CallFindModel(ctx context.Context, modelName string) (response *http.Response, err error) {
-	url := fmt.Sprintf("%s/%s?name=%s", config.ServerUrl, "model-manager/find", modelName)
+	url := fmt.Sprintf("%s/%s?name=%s", config.ServerUrl, "/model-manager/find", modelName)
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		util.LogErrorf("http.NewRequest error: %s", err)

@@ -52,6 +52,7 @@ func UpdateConfigMap(ctx context.Context, name string, configMap *corev1.ConfigM
 	return
 }
 
+// 创建prometheus监控
 func CreateMonitorService(ctx context.Context, serviceName string, tags map[string]string) (err error) {
 	serviceMonitor := monitorv1.ServiceMonitor{
 		ObjectMeta: metav1.ObjectMeta{
@@ -79,6 +80,7 @@ func CreateMonitorService(ctx context.Context, serviceName string, tags map[stri
 	return
 }
 
+// 删除prometheus监控
 func DeleteMonitorService(ctx context.Context, serviceName string) (err error) {
 	err = monitorClient.MonitoringV1().ServiceMonitors(monitorNamespace).Delete(ctx, fmt.Sprintf("%s-monitor", serviceName), metav1.DeleteOptions{})
 	return
