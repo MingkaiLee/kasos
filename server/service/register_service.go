@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 
 	"github.com/MingkaiLee/kasos/server/client"
 	"github.com/MingkaiLee/kasos/server/model"
@@ -47,11 +49,37 @@ func RegisterService(ctx context.Context, content []byte) (response *RegisterSer
 		return
 	}
 
-	// TODO: send stress test request to hpa-executor
+	// send stress test request to hpa-executor
+	// 固定测试的接口
+	url := fmt.Sprintf("http://%s.default.svc.cluster.local:8080/", req.Name)
+	// 默认从1开始压测
+	var initialQPS int64 = 1
+	// 默认10秒超时
+	var timeout int64 = 10
+	testConf := client.NormalTesterSettings{
+		Name:       req.Name,
+		Method:     "GET",
+		Url:        url,
+		InitialQPS: &initialQPS,
+		Timeout:    &timeout,
+	}
+	testResp, err := client.CallNormalTest(ctx, &testConf)
+	if err != nil {
+		util.LogErrorf("service.RegisterService error: %v", err)
+		response.Message = err.Error()
+		return
+	}
+	if testResp.StatusCode != http.StatusOK {
+		err = fmt.Errorf("call tester failed, status: %v, code: %d", testResp.Status, testResp.StatusCode)
+		util.LogErrorf("service.RegisterService error: %v", err)
+		response.Message = err.Error()
+		return
+	}
 
 	// create a Prometheus ServiceMonitor
 	err = client.CreateMonitorService(ctx, req.Name, req.Tags)
 	if err != nil {
+		util.LogErrorf("service.RegisterService error: %v", err)
 		response.Message = err.Error()
 		return
 	}
