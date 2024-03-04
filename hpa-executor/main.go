@@ -1,9 +1,9 @@
 package main
 
-import "time"
+import (
+	"github.com/MingkaiLee/kasos/hpa-executor/config"
+)
 
 func main() {
-	print(time.Now().UnixMilli())
-	time.Sleep(time.Second)
-	print(time.Now().UnixMilli())
+	config.InitConfig()
 }
