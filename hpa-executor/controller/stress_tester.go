@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/MingkaiLee/kasos/hpa-executor/internal"
 	"github.com/MingkaiLee/kasos/hpa-executor/util"
 	"github.com/cloudwego/hertz/pkg/app"
 )
@@ -13,6 +14,7 @@ func initStressTester() {
 	grp.POST("/normal-test", NormalTest)
 }
 
+// 压测接口
 func NormalTest(ctx context.Context, c *app.RequestContext) {
 	contentType := string(c.Request.Header.ContentType())
 	if contentType != "application/json" {
@@ -26,5 +28,11 @@ func NormalTest(ctx context.Context, c *app.RequestContext) {
 		c.SetStatusCode(http.StatusInternalServerError)
 		return
 	}
-	util.LogInfof("receive stress test request: %s", string(content))
+	err = internal.NormalTest(ctx, content)
+	if err != nil {
+		util.LogErrorf("normal test error: %v", err)
+		c.SetStatusCode(http.StatusInternalServerError)
+		return
+	}
+	c.SetStatusCode(http.StatusOK)
 }
