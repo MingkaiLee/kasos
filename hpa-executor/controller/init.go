@@ -4,9 +4,12 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 )
 
-var Server *server.Hertz
+var H *server.Hertz
 
-func init() {
-	initStressTester()
+func InitController() {
+	// init controller
+	H = server.Default()
+
 	initHpaExec()
+	initStressTester()
 }

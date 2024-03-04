@@ -9,7 +9,7 @@ import (
 )
 
 func initStressTester() {
-	grp := Server.Group("/stress-test")
+	grp := H.Group("/stress-test")
 	grp.POST("/normal-test", NormalTest)
 }
 
@@ -26,4 +26,5 @@ func NormalTest(ctx context.Context, c *app.RequestContext) {
 		c.SetStatusCode(http.StatusInternalServerError)
 		return
 	}
+	util.LogInfof("receive stress test request: %s", string(content))
 }

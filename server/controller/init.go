@@ -11,8 +11,6 @@ func InitController() {
 	H = server.Default()
 
 	initServiceManager()
-
-	// model-manager api
-	modelManager := H.Group("/model-manager")
-	modelManager.GET("/list")
+	initModelManager()
+	initDataManager()
 }
