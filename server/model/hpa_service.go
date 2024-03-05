@@ -58,6 +58,9 @@ func HpaServiceList() ([]HpaService, error) {
 	err := db.Where("status = ?", statusOk).Preload("HpaModel", func(db *gorm.DB) *gorm.DB {
 		return db.Select("model_name")
 	}).Order("id").Find(&h).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
 	return h, err
 }
 

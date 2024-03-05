@@ -26,3 +26,8 @@ func (c *CronJob) Start() {
 		}
 	}()
 }
+
+func (c *CronJob) Stop() {
+	c.ticker.Stop()
+	util.LogInfof("stop infer loop, time: %s", time.Now().Format(time.DateTime))
+}
