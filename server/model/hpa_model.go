@@ -53,6 +53,9 @@ func HpaModelGetID(modelName string) (uint, error) {
 func HpaModelList() ([]HpaModel, error) {
 	var h []HpaModel
 	err := db.Where("status = ?", statusOk).Order("id").Find(&h).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
 	return h, err
 }
 

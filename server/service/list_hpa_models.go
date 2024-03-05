@@ -18,6 +18,9 @@ func ListHpaModels(ctx context.Context) (response *ListHpaModelsResponse, err er
 		return
 	}
 	response = new(ListHpaModelsResponse)
+	if mds == nil {
+		return
+	}
 	response.HpaModels = make([]HpaModel, len(mds))
 	for i := range mds {
 		response.HpaModels[i] = HpaModel{

@@ -18,6 +18,9 @@ func ListHpaServices(ctx context.Context) (response *ListHpaServicesResponse, er
 		return
 	}
 	response = new(ListHpaServicesResponse)
+	if svcs == nil {
+		return
+	}
 	response.HpaServices = make([]HpaService, len(svcs))
 	for i := range svcs {
 		response.HpaServices[i] = HpaService{
