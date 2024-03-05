@@ -15,8 +15,8 @@ func initModelManager() {
 	modelManager.GET("/list", ListModels)
 	modelManager.GET("/find", FindModel)
 	modelManager.POST("/register", RegisterModel)
-	modelManager.GET("/register/result", RegisterModelResult)
-	modelManager.POST("/report/valid", ReportModelValid)
+	modelManager.GET("/register-result", RegisterModelResult)
+	modelManager.POST("/report-valid", ReportModelValid)
 }
 
 func ListModels(ctx context.Context, c *app.RequestContext) {

@@ -54,6 +54,7 @@ func CallNormalTest(ctx context.Context, req *NormalTesterSettings) (response *h
 		util.LogErrorf("http.CallNormalTest error: %s", err)
 		return
 	}
+	request.Header.Set("Content-Type", "application/json")
 	response, err = httpClient.Do(request)
 	if err != nil {
 		util.LogErrorf("http.CallNormalTest error: %s", err)

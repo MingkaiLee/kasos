@@ -15,9 +15,9 @@ func initServiceManager() {
 	serviceManager.GET("/list", ListServices)
 	serviceManager.GET("/find", FindService)
 	serviceManager.POST("/register", RegisterService)
-	serviceManager.GET("/register/result", RegisterServiceResult)
+	serviceManager.GET("/register-result", RegisterServiceResult)
 	serviceManager.POST("/delete", DeleteService)
-	serviceManager.POST("/report/thresh", ReportThresh)
+	serviceManager.POST("/report-thresh", ReportThresh)
 }
 
 func ListServices(ctx context.Context, c *app.RequestContext) {

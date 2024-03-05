@@ -38,7 +38,7 @@ func CallListHpaServices(ctx context.Context) (response *http.Response, err erro
 }
 
 func CallFindHpaService(ctx context.Context, serviceName string) (response *http.Response, err error) {
-	url := fmt.Sprintf("%s/%s", config.ServerUrl, "/service-manager/find")
+	url := fmt.Sprintf("%s/%s?name=%s", config.ServerUrl, "/service-manager/find", serviceName)
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		util.LogErrorf("http.CallFindHpaService error: %v", err)
@@ -62,7 +62,7 @@ func CallReportThresh(ctx context.Context, req *ReportThreshRequest) (response *
 		util.LogErrorf("http.CallReportThresh error: %v", err)
 		return
 	}
-	url := fmt.Sprintf("%s/%s", config.ServerUrl, "/service-manager/report/thresh")
+	url := fmt.Sprintf("%s/%s", config.ServerUrl, "/service-manager/report-thresh")
 	content, err := jsoniter.Marshal(*req)
 	if err != nil {
 		util.LogErrorf("http.CallReportThresh error: %v", err)
@@ -74,6 +74,7 @@ func CallReportThresh(ctx context.Context, req *ReportThreshRequest) (response *
 		util.LogErrorf("http.CallReportThresh error: %s", err)
 		return
 	}
+	request.Header.Set("Content-Type", "application/json")
 	response, err = httpClient.Do(request)
 	if err != nil {
 		util.LogErrorf("http.CallReportThresh error: %s", err)
