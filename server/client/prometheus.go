@@ -16,7 +16,7 @@ var prometheusClient api.Client
 
 const (
 	qpsQueryStep   = 15
-	qpsQueryPromQL = `increase(service_qps{%s}[15s])`
+	qpsQueryPromQL = `rate(service_qps{%s}[15s])`
 )
 
 type SerialDataPoint struct {
