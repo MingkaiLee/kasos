@@ -30,7 +30,7 @@ func UpDateServiceThreshQPSCache(serviceName string, threshQPS int) {
 	muSTQ.Unlock()
 }
 
-func GetDeplotmentReplica(serviceName string) (int32, bool) {
+func GetDeploymentReplica(serviceName string) (int32, bool) {
 	muDR.RLock()
 	r, ok := deploymentReplicaCache[serviceName]
 	muDR.RUnlock()

@@ -8,7 +8,7 @@ var H *server.Hertz
 
 func InitController() {
 	// init controller
-	H = server.Default()
+	H = server.Default(server.WithHostPorts(":8080"))
 
 	initServiceManager()
 	initModelManager()
