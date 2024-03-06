@@ -20,6 +20,8 @@ func ListHpaModels(ctx context.Context, startIndex uint) (response *ListHpaModel
 	}
 	response = new(ListHpaModelsResponse)
 	if mds == nil {
+		response.HpaModels = make([]HpaModel, 0)
+		response.NextIndex = -1
 		return
 	}
 	if len(mds) < model.PageSize {

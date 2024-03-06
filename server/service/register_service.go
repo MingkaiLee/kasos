@@ -51,7 +51,7 @@ func RegisterService(ctx context.Context, content []byte) (response *RegisterSer
 
 	// send stress test request to hpa-executor
 	// 固定测试的接口
-	url := fmt.Sprintf("http://%s.default.svc.cluster.local:8080/", req.Name)
+	url := fmt.Sprintf("http://%s.default.svc.cluster.local:8080/stress-test", req.Name)
 	// 默认从1开始压测
 	var initialQPS int64 = 1
 	// 默认10秒超时
