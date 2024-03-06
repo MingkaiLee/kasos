@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 
+	"github.com/MingkaiLee/kasos/server/client"
 	"github.com/MingkaiLee/kasos/server/model"
 	"github.com/MingkaiLee/kasos/server/util"
 	jsoniter "github.com/json-iterator/go"
@@ -35,9 +38,26 @@ func RegisterModel(ctx context.Context, content []byte) (response *RegisterModel
 	if err != nil {
 		util.LogErrorf("failed to create model, error: %v", err)
 		response.Message = err.Error()
+		return
 	}
 
-	// TODO: send a model validation request to infer-module
+	modelValidateReq := client.ScriptValidateRequest{
+		ModelName:   req.Name,
+		TrainScript: &req.TrainScript,
+		InferScript: &req.InferScript,
+	}
+	validateResp, err := client.CallModelValidate(ctx, &modelValidateReq)
+	if err != nil {
+		util.LogErrorf("failed to validate model, error: %v", err)
+		response.Message = err.Error()
+		return
+	}
+	if validateResp.StatusCode != http.StatusOK {
+		err = fmt.Errorf("call model validate failed, status: %v, code %d", validateResp.Status, validateResp.StatusCode)
+		util.LogErrorf("service.RegisterModel error: %v", err)
+		response.Message = err.Error()
+		return
+	}
 
 	response.Accepted = true
 	return

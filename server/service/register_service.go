@@ -84,6 +84,26 @@ func RegisterService(ctx context.Context, content []byte) (response *RegisterSer
 		return
 	}
 
+	// 注册服务到infer-module
+	addServiceReq := client.AddServiceRequest{
+		ServiceName: req.Name,
+		ModelName:   req.ModelName,
+		Tags:        util.ConvertTags(req.Tags),
+	}
+	addResp, err := client.CallAddService(ctx, &addServiceReq)
+	if err != nil {
+		util.LogErrorf("service.RegisterService error: %v", err)
+		response.Message = err.Error()
+		return
+	}
+	// 解析返回结果
+	if addResp.StatusCode != http.StatusOK {
+		err = fmt.Errorf("call add service failed, status: %v, code: %d", addResp.Status, addResp.StatusCode)
+		util.LogErrorf("service.RegisterService error: %v", err)
+		response.Message = err.Error()
+		return
+	}
+
 	response.Accepted = true
 	return
 }
