@@ -50,9 +50,9 @@ func HpaModelGetID(modelName string) (uint, error) {
 	return h.ID, err
 }
 
-func HpaModelList() ([]HpaModel, error) {
+func HpaModelList(start_idx uint) ([]HpaModel, error) {
 	var h []HpaModel
-	err := db.Where("status = ?", statusOk).Order("id").Find(&h).Error
+	err := db.Where("status = ? AND id >= ?", statusOk, start_idx).Order("id").Limit(PageSize).Find(&h).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}

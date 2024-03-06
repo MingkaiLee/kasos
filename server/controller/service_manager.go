@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/MingkaiLee/kasos/server/service"
 	"github.com/MingkaiLee/kasos/server/util"
@@ -21,7 +22,18 @@ func initServiceManager() {
 }
 
 func ListServices(ctx context.Context, c *app.RequestContext) {
-	r, err := service.ListHpaServices(ctx)
+	index, ok := c.GetQuery("index")
+	startIndex := 0
+	if ok {
+		var err error
+		startIndex, err = strconv.Atoi(index)
+		if err != nil {
+			util.LogErrorf("parse index error: %v", err)
+			c.SetStatusCode(http.StatusBadRequest)
+			return
+		}
+	}
+	r, err := service.ListHpaServices(ctx, uint(startIndex))
 	if err != nil {
 		util.LogErrorf("list service error: %v", err)
 		c.SetStatusCode(http.StatusInternalServerError)

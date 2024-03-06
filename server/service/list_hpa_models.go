@@ -9,10 +9,11 @@ import (
 
 type ListHpaModelsResponse struct {
 	HpaModels []HpaModel `json:"hpa_models"`
+	NextIndex int        `json:"next_index"`
 }
 
-func ListHpaModels(ctx context.Context) (response *ListHpaModelsResponse, err error) {
-	mds, err := model.HpaModelList()
+func ListHpaModels(ctx context.Context, startIndex uint) (response *ListHpaModelsResponse, err error) {
+	mds, err := model.HpaModelList(startIndex)
 	if err != nil {
 		util.LogErrorf("failed to list hpa models, error: %v", err)
 		return
@@ -20,6 +21,11 @@ func ListHpaModels(ctx context.Context) (response *ListHpaModelsResponse, err er
 	response = new(ListHpaModelsResponse)
 	if mds == nil {
 		return
+	}
+	if len(mds) < model.PageSize {
+		response.NextIndex = -1
+	} else {
+		response.NextIndex = int(mds[9].ID) + 1
 	}
 	response.HpaModels = make([]HpaModel, len(mds))
 	for i := range mds {

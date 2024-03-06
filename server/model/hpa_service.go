@@ -53,11 +53,11 @@ func HpaServiceGet(serviceName string) (*HpaService, error) {
 	return h, err
 }
 
-func HpaServiceList() ([]HpaService, error) {
+func HpaServiceList(start_idx uint) ([]HpaService, error) {
 	h := make([]HpaService, 0)
-	err := db.Where("status = ?", statusOk).Preload("HpaModel", func(db *gorm.DB) *gorm.DB {
+	err := db.Where("status = ? AND id >= ?", statusOk, start_idx).Preload("HpaModel", func(db *gorm.DB) *gorm.DB {
 		return db.Select("model_name")
-	}).Order("id").Find(&h).Error
+	}).Order("id").Limit(PageSize).Find(&h).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
