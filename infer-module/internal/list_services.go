@@ -4,8 +4,8 @@ import (
 	"context"
 	"io"
 
-	"github.com/MingkaiLee/kasos/trainer/client"
-	"github.com/MingkaiLee/kasos/trainer/util"
+	"github.com/MingkaiLee/kasos/infer-module/client"
+	"github.com/MingkaiLee/kasos/infer-module/util"
 	jsoniter "github.com/json-iterator/go"
 )
 

@@ -23,11 +23,11 @@ func InitHTTPClient() {
 	}
 }
 
-func CallListHpaServices(ctx context.Context) (response *http.Response, err error) {
-	url := fmt.Sprintf("%s/%s", config.ServerUrl, "/service-manager/list")
+func CallListHpaServices(ctx context.Context, index int) (response *http.Response, err error) {
+	url := fmt.Sprintf("%s/%s?index=%d", config.ServerUrl, "/service-manager/list", index)
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		util.LogErrorf("http.NewRequest error: %s", err)
+		util.LogErrorf("http.CallListHpaServices error: %s", err)
 		return
 	}
 	response, err = httpClient.Do(request)

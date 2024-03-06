@@ -20,6 +20,8 @@ func ListHpaServices(ctx context.Context, startIndex uint) (response *ListHpaSer
 	}
 	response = new(ListHpaServicesResponse)
 	if svcs == nil {
+		response.HpaServices = make([]HpaService, 0)
+		response.NextIndex = -1
 		return
 	}
 	if len(svcs) < model.PageSize {

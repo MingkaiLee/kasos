@@ -7,25 +7,14 @@ import (
 	"github.com/MingkaiLee/kasos/infer-module/util"
 )
 
-type ListHpaServicesResponse struct {
-	HpaServices []HpaService `json:"hpa_services"`
-}
-
-type HpaService struct {
-	Name      *string           `json:"name"`
-	Tags      map[string]string `json:"tags"`
-	ThreshQPS *uint             `json:"thresh_qps"`
-	ModelName *string           `json:"model_name"`
-}
-
 type ParallelInferer struct {
 	mu       sync.Mutex
 	services []*Service
 }
 
-func NewParallerInferer(r *ListHpaServicesResponse) *ParallelInferer {
+func NewParallerInferer(services []HpaService) *ParallelInferer {
 	inferer := &ParallelInferer{}
-	for _, hpaService := range r.HpaServices {
+	for _, hpaService := range services {
 		inferer.AddService(*hpaService.Name, *hpaService.ModelName, util.ConvertTags(hpaService.Tags))
 	}
 	return inferer

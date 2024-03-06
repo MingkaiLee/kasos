@@ -22,7 +22,7 @@ func (c *CronJob) Start() {
 	go func() {
 		util.LogInfof("start infer loop, time: %s", time.Now().Format(time.DateTime))
 		for range c.ticker.C {
-			go c.Inferer.Infer()
+			c.Inferer.Infer()
 		}
 	}()
 }

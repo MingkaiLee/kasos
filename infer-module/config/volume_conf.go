@@ -9,18 +9,20 @@ import (
 )
 
 var (
-	DataDirectory   string
-	ModelDirectory  string
-	ScriptDirectory string
+	DataDirectory    string
+	ModelDirectory   string
+	ScriptDirectory  string
+	ValidateDataPath string
 )
 
 const volumeConfFile = "/etc/config/volume.conf"
 
 type VolumeConf struct {
-	MountPath       string `json:"mount_path"`
-	DataDirectory   string `json:"data_directory"`
-	ModelDirectory  string `json:"model_directory"`
-	ScriptDirectory string `json:"script_directory"`
+	MountPath        string `json:"mount_path"`
+	DataDirectory    string `json:"data_directory"`
+	ModelDirectory   string `json:"model_directory"`
+	ScriptDirectory  string `json:"script_directory"`
+	ValidateDataPath string `json:"validate_data_path"`
 }
 
 func initVolumeConf() {
@@ -40,4 +42,5 @@ func initVolumeConf() {
 	DataDirectory = fmt.Sprintf("%s/%s", conf.MountPath, conf.DataDirectory)
 	ModelDirectory = fmt.Sprintf("%s/%s", conf.MountPath, conf.ModelDirectory)
 	ScriptDirectory = fmt.Sprintf("%s/%s", conf.MountPath, conf.ScriptDirectory)
+	ValidateDataPath = fmt.Sprintf("%s/%s", conf.MountPath, conf.ValidateDataPath)
 }

@@ -51,6 +51,9 @@ func NormalTest(ctx context.Context, conf []byte) (err error) {
 		}
 		// 发送回调消息
 		resp, e := client.CallReportThresh(ctx, &req)
+		if e != nil {
+			util.LogErrorf("service.NormalTest report request: %+v,resp: %+v, err: %v", req, *resp, e)
+		}
 		// 打印日志
 		util.LogInfof("service.NormalTest report request: %+v,resp: %+v, err: %v", req, *resp, e)
 	}()

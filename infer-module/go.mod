@@ -3,6 +3,7 @@ module github.com/MingkaiLee/kasos/infer-module
 go 1.21.6
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/json-iterator/go v1.1.12
 	github.com/prometheus/client_golang v1.19.0
 	github.com/prometheus/common v0.48.0

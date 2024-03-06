@@ -25,8 +25,8 @@ func InitHTTPClient() {
 	}
 }
 
-func CallListHpaServices(ctx context.Context) (response *http.Response, err error) {
-	url := fmt.Sprintf("%s/%s", config.ServerUrl, "/service-manager/list")
+func CallListHpaServices(ctx context.Context, index int) (response *http.Response, err error) {
+	url := fmt.Sprintf("%s/%s?index=%d", config.ServerUrl, "/service-manager/list", index)
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		util.LogErrorf("http.CallListHpaServices error: %s", err)
@@ -76,6 +76,40 @@ func CallReportQPS(ctx context.Context, req *ReportQPSRequest) (response *http.R
 	response, err = httpClient.Do(request)
 	if err != nil {
 		util.LogErrorf("http.CallReportThresh error: %s", err)
+		return
+	}
+
+	return
+}
+
+type ReportModelValidRequest struct {
+	ModelName string `json:"model_name"`
+	Ok        bool   `json:"ok"`
+	ErrorInfo string `json:"error_info"`
+}
+
+func CallReportModelValid(ctx context.Context, req *ReportModelValidRequest) (response *http.Response, err error) {
+	if req == nil {
+		err = fmt.Errorf("request is nil")
+		util.LogErrorf("http.CallReportModelValid error: %v", err)
+		return
+	}
+	url := fmt.Sprintf("%s/%s", config.ServerUrl, "/model-manager/report-valid")
+	content, err := jsoniter.Marshal(*req)
+	if err != nil {
+		util.LogErrorf("http.CallReportModelValid error: %v", err)
+		return
+	}
+	body := bytes.NewReader(content)
+	request, err := http.NewRequest(http.MethodPost, url, body)
+	if err != nil {
+		util.LogErrorf("http.CallReportModelValid error: %v", err)
+		return
+	}
+	request.Header.Set("Content-Type", "application/json")
+	response, err = httpClient.Do(request)
+	if err != nil {
+		util.LogErrorf("http.CallReportModelValid error: %v", err)
 		return
 	}
 
