@@ -9,6 +9,7 @@ import (
 func main() {
 	config.InitConfig()
 	client.InitClient()
+	controller.InitController()
 
 	controller.H.Spin()
 }

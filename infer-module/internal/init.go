@@ -1,6 +1,8 @@
 package internal
 
-import "github.com/MingkaiLee/kasos/infer-module/util"
+import (
+	"github.com/MingkaiLee/kasos/infer-module/util"
+)
 
 var InferCronJob *CronJob
 
