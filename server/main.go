@@ -12,6 +12,7 @@ func main() {
 	config.InitConf()
 	model.InitModel()
 	client.InitClient()
+	controller.InitController()
 
 	controller.H.Spin()
 }

@@ -13,7 +13,9 @@ type ParallelInferer struct {
 }
 
 func NewParallerInferer(services []HpaService) *ParallelInferer {
-	inferer := &ParallelInferer{}
+	inferer := &ParallelInferer{
+		services: make([]*Service, 0),
+	}
 	for _, hpaService := range services {
 		inferer.AddService(*hpaService.Name, *hpaService.ModelName, util.ConvertTags(hpaService.Tags))
 	}
