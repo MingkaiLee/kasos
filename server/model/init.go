@@ -10,6 +10,7 @@ import (
 var db *gorm.DB
 
 const (
+	PageSize      = 10
 	statusTesting = "testing"
 	statusOk      = "ok"
 	statusError   = "error"
