@@ -16,7 +16,7 @@ var prometheusClient api.Client
 
 const (
 	qpsQueryStep   = 15
-	qpsQueryPromQL = `rate(service_qps{auto_hpa="on",service_name="%s"}[15s])`
+	qpsQueryPromQL = `rate(request_count{auto_hpa="on",service_name="%s"}[15s])`
 )
 
 type SerialDataPoint struct {
