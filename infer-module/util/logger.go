@@ -5,6 +5,8 @@ import (
 	"os"
 )
 
+const logPath = "/etc/log/infer-module.txt"
+
 var (
 	// Log is the logger used by the package.
 	loggerInfo  *log.Logger
@@ -12,8 +14,12 @@ var (
 )
 
 func init() {
-	loggerInfo = log.New(os.Stdout, "[INFO]", log.LstdFlags|log.Lshortfile)
-	loggerError = log.New(os.Stdout, "[ERROR]", log.LstdFlags|log.Lshortfile)
+	logFile, err := os.OpenFile(logPath, os.O_APPEND|os.O_CREATE, 0644)
+	if err != nil {
+		panic(err)
+	}
+	loggerInfo = log.New(logFile, "[INFO]", log.LstdFlags|log.Lshortfile)
+	loggerError = log.New(logFile, "[ERROR]", log.LstdFlags|log.Lshortfile)
 }
 
 func LogInfof(format string, v ...interface{}) {

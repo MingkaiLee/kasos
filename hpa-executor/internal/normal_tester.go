@@ -125,13 +125,12 @@ func (p *NormalTester) basicRtTest() {
 	var totalTime int64 = 0
 	var reqCount int64 = 0
 	for i := 0; i < config.RtTestEpoch; i++ {
-		startTime := time.Now().UnixMicro()
+		startTime := time.Now()
 		_, err := p.client.Do(p.request)
 		if err != nil {
 			continue
 		}
-		endTime := time.Now().UnixMicro()
-		diff := endTime - startTime
+		diff := time.Since(startTime).Milliseconds()
 		totalTime += diff
 		reqCount += 1
 	}
@@ -170,13 +169,12 @@ func (p *NormalTester) Run() {
 				m.Add(1)
 				go func() {
 					defer m.Done()
-					startTime := time.Now().UnixMilli()
+					startTime := time.Now()
 					_, err := p.client.Do(p.request)
 					if err != nil {
 						return
 					}
-					endTime := time.Now().UnixMilli()
-					diff := endTime - startTime
+					diff := time.Since(startTime).Milliseconds()
 					// 使用atomic保证并发安全
 					atomic.AddInt64(&successCount, 1)
 					atomic.AddInt64(&totalRt, diff)

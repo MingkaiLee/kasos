@@ -1,11 +1,11 @@
-package util
+package main
 
 import (
 	"log"
 	"os"
 )
 
-const logPath = "/etc/log/hpa-executor.txt"
+const logPath = "/etc/log/measure.txt"
 
 var (
 	// Log is the logger used by the package.
