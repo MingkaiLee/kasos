@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: infer-module
+  labels:
+    app: kasos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kasos
+      tier: infer-module
+  template:
+    metadata:
+      labels:
+        app: kasos
+        tier: infer-module
+    spec:
+      containers:
+      - name: infer-module
+        image: infer-module:v0.1
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+        - name: public-volume
+          mountPath: /mnt
+        resources:
+          limits:
+            memory: 2Gi
+            cpu: 2000m
+      volumes:
+        - name: config-volume
+          configMap:
+            name: kasos-config
+            items:
+              - key: "url-conf-json"
+                path: "url.json"
+              - key: "volume-conf-json"
+                path: "volume.json"
+        - name: public-volume
+          persistentVolumeClaim:
+            claimName: public-pvc

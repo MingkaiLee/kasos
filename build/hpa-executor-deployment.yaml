@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hpa-executor
+  labels:
+    app: kasos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kasos
+      tier: hpa-executor
+  template:
+    metadata:
+      labels:
+        app: kasos
+        tier: hpa-exector
+    spec:
+      serviceAccountName: kasos-controller
+      containers:
+      - name: hpa-executor
+        image: hpa-executor:v0.1
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+        - name: public-volume
+          mountPath: /mnt
+        resources:
+          limits:
+            memory: 2Gi
+            cpu: 2000m
+      volumes:
+        - name: config-volume
+          configMap:
+            name: kasos-config
+            items:
+              - key: "url-conf-json"
+                path: "url.json"
+              - key: "module-conf-json"
+                path: "module.json"
+        - name: public-volume
+          persistentVolumeClaim:
+            claimName: public-pvc

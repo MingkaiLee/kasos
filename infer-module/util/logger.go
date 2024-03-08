@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const logPath = "/etc/log/infer-module.txt"
+const logPath = "/mnt/log/infer-module.txt"
 
 var (
 	// Log is the logger used by the package.
