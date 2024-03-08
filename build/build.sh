@@ -21,6 +21,9 @@ cmd_log() {
     eval $cmd
 }
 
+echo ">>> Start build and deploy kasos..."
+start=$(date +%s)
+
 # 切换docker环境
 eval $(minikube -p minikube docker-env)
 
@@ -61,3 +64,6 @@ cmd_log "kubectl apply -f ./infer-module-deployment.yaml"
 cmd_log "kubectl apply -f ./infer-module-service.yaml"
 # 创建trainer CronJob
 cmd_log "kubectl apply -f ./trainer-cronjob.yaml"
+
+end=$(date +%s)
+echo ">>> Build and deploy kasos successfully, cost $((end-start)) seconds."
