@@ -4,6 +4,7 @@ metadata:
   name: server-mysql
   labels:
     app: kasos
+    tier: mysql
 spec:
   replicas: 1
   selector:
