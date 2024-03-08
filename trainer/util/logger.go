@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const logPath = "/etc/log/trainer.txt"
+const logPath = "/mnt/log/trainer.txt"
 
 var (
 	// Log is the logger used by the package.

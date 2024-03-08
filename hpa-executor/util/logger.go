@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const logPath = "/etc/log/hpa-executor.txt"
+const logPath = "/mnt/log/hpa-executor.txt"
 
 var (
 	// Log is the logger used by the package.
