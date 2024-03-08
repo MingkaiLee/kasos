@@ -4,6 +4,7 @@ metadata:
   name: hpa-executor
   labels:
     app: kasos
+    tier: hpa-executor
 spec:
   replicas: 1
   selector:
@@ -19,7 +20,7 @@ spec:
       serviceAccountName: kasos-controller
       containers:
       - name: hpa-executor
-        image: hpa-executor:v0.1
+        image: kasos-hpa-executor:v0.1
         ports:
         - containerPort: 8080
         volumeMounts:
