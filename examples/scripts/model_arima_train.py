@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import argparse
-import pandas as pd
 from pmdarima import auto_arima
 import joblib
 
@@ -26,13 +25,20 @@ def prepare_data(data_path: str) -> list[float]:
     r = list()
     with open(data_path, "r") as f:
         r = [float(line.strip().split("\t")[1]) for line in f.readlines()]
-    
+
     return r
 
 
 # 训练arima模型
-def min_aic_train(data, max_p: int=10, max_q: int=10):
-    model = auto_arima(data, start_p=1, start_q=1, max_p=max_p, max_q=max_q, test='adf', seasonal=False, stepwise=True)
+def min_aic_train(data, max_p: int = 10, max_q: int = 10):
+    model = auto_arima(data,
+                       start_p=1,
+                       start_q=1,
+                       max_p=max_p,
+                       max_q=max_q,
+                       test='adf',
+                       seasonal=False,
+                       stepwise=True)
 
     return model
 

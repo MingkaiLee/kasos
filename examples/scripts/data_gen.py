@@ -25,8 +25,15 @@ def parse_args() -> argparse.Namespace:
         "-o",
         "--output",
         type=str,
-        default="data.csv",
+        default="data",
         help="output file name",
+    )
+    parser.add_argument(
+        "-n",
+        "--num",
+        type=int,
+        default=10,
+        help="number of output files",
     )
     return parser.parse_args()
 
@@ -39,7 +46,7 @@ element = [[5, 10, 20, 30, 35, 40, 50, 60, 70, 75, 80, 85],
            [40, 55, 45, 60, 50, 55, 55, 45, 60, 50, 45, 60]]
 
 
-def gen_data(date: str, base: int) -> list[tuple[str, float]]:
+def gen_data_base(date: str, base: int) -> list[tuple[str, float]]:
     date_start = datetime.strptime(date, "%Y-%m-%d")
     date_end = date_start + timedelta(days=1)
     res = list()
@@ -48,10 +55,19 @@ def gen_data(date: str, base: int) -> list[tuple[str, float]]:
         choice = element[s]
         for p in choice:
             date_str = date_start.strftime("%Y-%m-%d %H:%M:%S")
-            v = float(base) * p / 100 * (1 + rand_factor())
-            res.append((date_str, v))
+            res.append((date_str, p * base / 100))
             date_start += timedelta(seconds=15)
     return res
+
+
+def gen_data_random(data: list[tuple[str, float]], idx: int) -> list[tuple[str, float]]:
+    new_data = list()
+    for timestamp, value in data:
+        rand_factor = np.random.uniform(0.8, 1.2)
+        t = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S") + timedelta(days=idx)
+        new_data.append((t.strftime("%Y-%m-%d %H:%M:%S"), value * rand_factor))
+
+    return new_data
 
 
 def rand_factor() -> float:
@@ -63,7 +79,12 @@ def rand_factor() -> float:
 
 if __name__ == "__main__":
     args = parse_args()
-    data = gen_data(args.date, args.base)
-    with open(args.output, "w+") as f:
+    data = gen_data_base(args.date, args.base)
+    with open(args.output+".csv", "w+") as f:
         for d in data:
             f.write("{:s}\t{:.4f}\n".format(d[0], d[1]))
+    for i in range(args.num):
+        new_data = gen_data_random(data, i)
+        with open(f"{args.output}_{i}.csv", "w+") as f:
+            for d in new_data:
+                f.write("{:s}\t{:.4f}\n".format(d[0], d[1]))
