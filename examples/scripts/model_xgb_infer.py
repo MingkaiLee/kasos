@@ -23,13 +23,12 @@ def prepare_data(timestamp: str, value: float):
     t_ref = t.replace(hour=0, minute=0, second=0)
     diff_sec = (t - t_ref).total_seconds()
     vec = list()
-    for i in range(3):
-        v = diff_sec - (3-i)*15
+    for i in range(4):
+        v = diff_sec - (3 - i) * 15
         if v < 0:
-            vec.append(0)
+            vec.append(24 * 60 * 60 + v)
         else:
             vec.append(v)
-    vec.append(diff_sec)
     vec.append(value)
     return xgb.DMatrix(np.array([vec]))
 
@@ -37,6 +36,7 @@ def prepare_data(timestamp: str, value: float):
 def load_model(model_path: str) -> xgb.Booster:
     with open(model_path, "rb") as f:
         return pickle.load(f)
+
 
 if __name__ == "__main__":
     args = parse_args_infer()

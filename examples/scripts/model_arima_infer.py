@@ -21,7 +21,7 @@ def timestamp_2_index(timestamp: str) -> int:
     t_ref = t.replace(hour=0, minute=0, second=0)
     diff_sec = (t - t_ref).total_seconds()
 
-    return round(diff_sec/15)
+    return round(diff_sec / 15)
 
 
 def load_model(model_path: str):
@@ -32,5 +32,5 @@ if __name__ == "__main__":
     args = parse_args_infer()
     idx = timestamp_2_index(args.timestamp)
     model = load_model(args.model)
-    forecast = model.predict_in_sample(end = idx)
+    forecast = model.predict_in_sample(end=idx)
     print(forecast[-1])
