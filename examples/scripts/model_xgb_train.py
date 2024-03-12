@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 import argparse
 import xgboost as xgb
-from sklearn.model_selection import train_test_split
 import numpy as np
 from datetime import datetime
+import pickle
 
 
 def parse_args_train() -> argparse.Namespace:
@@ -40,18 +40,36 @@ def gen_dataset(data: list[tuple[float, float]], window_size: int=4):
     X, y = [], []
     for i in range(len(data) - window_size - 1):
         # TODO
-        X.append(data[i:(i+window_size)])
-        y.append(data[i+window_size])
+        x = [v[0] for v in data[i:(i+window_size)]]
+        x.append(data[i+window_size-1][1])
+        X.append(x)
+        y.append(data[i+window_size][1])
     return np.array(X), np.array(y)
 
 
-def prepare_xgb_dataset(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
-    dtrain = xgb.DMatrix(X, label=y)
-    return dtrain
+def xgb_train(model, X, y) -> xgb.Booster:
+    data = xgb.DMatrix(X, label=y)
+    return xgb.train(params, data, num_boost_round=train_round, xgb_model=model)
+
+
+params = {
+    'max_depth': 6,
+    'eta': 0.1,
+    'objective': 'count:poisson',
+    'eval_metric': 'rmse',
+}
+
+train_round = 300
 
 
 if __name__ == "__main__":
     args = parse_args_train()
     data = prepare_data(args.data)
-    print(gen_dataset(data))
+    X, y = gen_dataset(data)
+    pre_model = None
+    if not args.new:
+        with open(args.model, "rb") as f:
+            pre_model = pickle.load(f)
+    model = xgb_train(pre_model, X, y)
+    with open(args.model, "wb+") as f:
+        pickle.dump(model, f)
