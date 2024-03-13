@@ -60,11 +60,13 @@ def gen_data_base(date: str, base: int) -> list[tuple[str, float]]:
     return res
 
 
-def gen_data_random(data: list[tuple[str, float]], idx: int) -> list[tuple[str, float]]:
+def gen_data_random(data: list[tuple[str, float]],
+                    idx: int) -> list[tuple[str, float]]:
     new_data = list()
     for timestamp, value in data:
         rand_factor = np.random.uniform(0.8, 1.2)
-        t = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S") + timedelta(days=idx)
+        t = datetime.strptime(timestamp,
+                              "%Y-%m-%d %H:%M:%S") + timedelta(days=idx)
         new_data.append((t.strftime("%Y-%m-%d %H:%M:%S"), value * rand_factor))
 
     return new_data
@@ -80,7 +82,7 @@ def rand_factor() -> float:
 if __name__ == "__main__":
     args = parse_args()
     data = gen_data_base(args.date, args.base)
-    with open(args.output+".csv", "w+") as f:
+    with open(args.output + ".csv", "w+") as f:
         for d in data:
             f.write("{:s}\t{:.4f}\n".format(d[0], d[1]))
     for i in range(args.num):
