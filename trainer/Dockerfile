@@ -9,7 +9,6 @@ WORKDIR /app
 COPY . .
 
 # 下载依赖项（如果有）
-# 如果你使用 Go Modules 管理依赖，请确保在项目根目录下有 go.mod 和 go.sum 文件
 RUN go mod download
 
 # 编译 Go 程序为静态链接的二进制文件
@@ -19,11 +18,17 @@ RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app
 
 # 第二阶段：创建运行环境
-# 使用专为时序模型训练和推理的 python-ts 作为最终镜像的基础镜像
-FROM python-ts:v0.1
+# 自python3.10.13版本开始构建
+FROM python:3.10.13
 
-# 从 builder 阶段复制编译好的二进制文件到当前阶段的根目录
-COPY --from=builder /app/app /
+WORKDIR /app
+
+# 从 builder 阶段复制编译好的二进制文件到当前阶段的app目录中
+COPY --from=builder /app/app /app
+
+# pip安装需要的python包
+RUN pip install --upgrade pip
+RUN pip install numpy scikit-learn xgboost statsmodels torch torchvision pmdarima joblib
 
 # 设置容器启动时执行的命令
-ENTRYPOINT ["/app"]
+ENTRYPOINT ["/app/app"]
