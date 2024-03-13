@@ -1,0 +1,68 @@
+openapi: '3.0.2'
+info:
+  title: Data Manager APIs
+  version: '1.0'
+servers:
+  - url: https://localhost:10168/service-manager
+paths:
+  /fetch:
+    post:
+      summary: Fetch the historic serial data of services' QPS or other metrics
+      requestBody:
+        description: The configurations of your fetch request
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - "start_time"
+                - "end_time"
+                - "tags"
+              properties:
+                start_time:
+                  type: string
+                  description: Start timestamp in the required format
+                  example: "2006-01-02 15:04:05"
+                end_time:
+                  type: string
+                  description: End timestamp in the required format
+                  example: "2006-01-02 15:04:05"
+                tags:
+                  type: string
+                  description: Tags of services, in Kubernetes label format, separated by comma
+                  example: app="test-app",auto_hpa="on"
+              example:
+                start_time: "2023-12-25 10:00:00"
+                end_time: "2023-12-26 10:00:00"
+                tags: "app=test-app,auto_hpa=on"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: If the message is not empty, the query failed, and the reason is dumped here
+                  serial_data:
+                    type: object
+                    description: The result of the query, the key is the metrics name, the value is the time series list of the metrics
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                        description: A timestamp and the qps value, separated by tab
+              example:
+                message: ""
+                serial_data:
+                  qps: ["2023-12-25 10:00:00\t100", "2023-12-25 10:00:15\t200"]
+                  latency: ["2023-12-25 10:00:00\t30", "2023-12-25 10:00:15\t45"]
+        '415':
+          description: Unsupported Media Type. Input is not in JSON format
+        '400':
+          description: Bad Request. Input lacks required fields or has wrong type fields
+        '500':
+          description: Internal Server Error. Please try again later

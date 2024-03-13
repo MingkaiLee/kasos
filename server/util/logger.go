@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const logPath = "/mnt/log/server.txt"
+const logPath = "/mnt/log/trainer.txt"
 
 var (
 	// Log is the logger used by the package.
@@ -14,7 +14,7 @@ var (
 )
 
 func init() {
-	logFile, err := os.OpenFile(logPath, os.O_APPEND|os.O_CREATE, 0644)
+	logFile, err := os.OpenFile(logPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		panic(err)
 	}
@@ -24,8 +24,10 @@ func init() {
 
 func LogInfof(format string, v ...interface{}) {
 	loggerInfo.Printf(format, v...)
+	loggerInfo.Println()
 }
 
 func LogErrorf(format string, v ...interface{}) {
 	loggerError.Printf(format, v...)
+	loggerError.Println()
 }

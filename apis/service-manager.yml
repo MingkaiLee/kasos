@@ -37,17 +37,24 @@ paths:
                   model_name:
                     type: string
                     description: The name of the time series model used by the service
+              example:
+                name: "test-service"
+                tags:
+                  app: "test-app"
+                  auto_hpa: "on"
+                thresh_qps: 50
+                model_name: "test-model"
         '404':
-          description: Not Found. The service does not exist now.
+          description: Not Found. The service does not exist now
         '500':
-          description: Internal Server Error. Please try again later.
+          description: Internal Server Error. Please try again later
   /list:
     get:
       summary: Paginated listing of all services that have been successfully registered in the system, with a maximum of 10 records per page
       parameters:
         - in: query
           name: index
-          description: The index of the service. Default is zero
+          description: The index of the service, start from zero. The query will start from the index. Default is zero
           required: false
           schema:
             type: string
@@ -61,7 +68,7 @@ paths:
                 properties:
                   hpa_services:
                     type: array
-                    description: todo
+                    description: List of the services. The service information JSON format is the same as the api /find
                     items:
                       type: object
                       properties:
@@ -81,11 +88,26 @@ paths:
                           description: The name of the time series model used by the service
                   next_index:
                     type: integer
-                    description: The next index you should use to query the next page
+                    description: The next index you should use to query the next page. If it is -1, there is no next page
+              example:
+                hpa_services:
+                  - name: "test-service"
+                    tags:
+                      app: "test-app"
+                      auto_hpa: "on"
+                    thresh_qps: 50
+                    model_name: "test-model"
+                  - name: "my-server"
+                    tags:
+                      app: "my-server"
+                      version: "v1"
+                    thresh_qps: 10
+                    model_name: "my-model"
+                next_index: -1
         '400':
-          description: Bad Request. Input index value is not an integer.
+          description: Bad Request. Input index value is not an integer
         '500':
-          description: Internal Server Error. Please try again later.
+          description: Internal Server Error. Please try again later
   /register:
     post:
       summary: Register a service in the system
@@ -112,6 +134,12 @@ paths:
                 model_name:
                   type: string
                   description: The name of the time series model used by the service
+            example:
+              name: "test-service"
+              tags:
+                app: "test-app"
+                auto_hpa: "on"
+              model_name: "test-model"
       responses:
         '200':
           description: OK
@@ -126,6 +154,9 @@ paths:
                   message:
                     type: string
                     description: If the service is not accessible, the reason why will be displayed here
+                example:
+                  accepted: true
+                  message: ""
         '415':
           description: Unsupported Media Type. Input is not in JSON format
         '400':
@@ -134,7 +165,7 @@ paths:
           description: Internal Server Error. Please try again later
   /register-result:
     get:
-      summary: Querying service registration results. Please use the api after successfully called the api /register
+      summary: Querying service registration results. Please only use the api after successfully called the api /register
       parameters:
         - in: query
           name: name
@@ -156,10 +187,13 @@ paths:
                   error_info:
                     type: string
                     description: If the status is "error", the reason why will be displayed here
+              example:
+                status: "ok"
+                error_info: ""
         '404':
-          description: Not Found. The service does not exist now.
+          description: Not Found. The service does not exist now
         '500':
-          description: Internal Server Error. Please try again later.
+          description: Internal Server Error. Please try again later
   /delete:
     post:
       summary: Delete a registered service in the system. Please call the api before you delete the service in kubernetes cluster
@@ -184,6 +218,9 @@ paths:
                   message:
                     type: string
                     description: If the service is not deleted, the reason why will be displayed here
+              example:
+                success: true
+                message: ""
         '404':
           description: Not Found. Lack name parameter
         '500':

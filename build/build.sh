@@ -27,8 +27,10 @@ start=$(date +%s)
 # 切换docker环境
 eval $(minikube -p minikube docker-env)
 
+# 拉取golang基础镜像
+docker pull golang:1.21.6
 # 拉取python基础镜像
-docker pull python:3.10
+docker pull python:3.10.13
 # 拉取mysql基础镜像
 docker pull mysql:8.0
 # 构建镜像
