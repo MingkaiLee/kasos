@@ -30,8 +30,8 @@ spec:
           mountPath: /mnt
         resources:
           limits:
-            memory: 2Gi
-            cpu: 2000m
+            memory: 1Gi
+            cpu: 1000m
       volumes:
         - name: config-volume
           configMap:

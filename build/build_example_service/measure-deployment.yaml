@@ -27,8 +27,8 @@ spec:
           mountPath: /mnt
         resources:
           limits:
-            memory: 2Gi
-            cpu: 2000m
+            memory: 256Mi
+            cpu: 250m
       volumes:
         - name: public-volume
           persistentVolumeClaim:
