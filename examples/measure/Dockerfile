@@ -25,5 +25,7 @@ FROM scratch
 # 从 builder 阶段复制编译好的二进制文件到当前阶段的根目录
 COPY --from=builder /app/app /
 
+EXPOSE 8080
+
 # 设置容器启动时执行的命令
 ENTRYPOINT ["/app"]
