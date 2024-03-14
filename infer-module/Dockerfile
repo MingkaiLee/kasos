@@ -19,16 +19,12 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app
 
 # 第二阶段：创建运行环境
 # 自python3.10.13版本开始构建
-FROM python:3.10.13
+FROM pyts:v0.1
 
 WORKDIR /app
 
 # 从 builder 阶段复制编译好的二进制文件到当前阶段的app目录中
 COPY --from=builder /app/app /app
-
-# pip安装需要的python包
-RUN pip install --upgrade pip
-RUN pip install numpy scikit-learn xgboost statsmodels torch torchvision pmdarima joblib
 
 EXPOSE 8080
 

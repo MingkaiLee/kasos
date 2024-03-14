@@ -9,7 +9,7 @@ spec:
   type: NodePort
   ports:
     - port: 8080
-      nodePort: 10168
+      nodePort: 30168
   selector:
     app: kasos
     tier: server

@@ -15,7 +15,7 @@ spec:
     metadata:
       labels:
         app: kasos
-        tier: hpa-exector
+        tier: hpa-executor
     spec:
       serviceAccountName: kasos-controller
       containers:
