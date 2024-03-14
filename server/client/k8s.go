@@ -62,7 +62,7 @@ func CreateMonitorService(ctx context.Context, serviceName string, tags map[stri
 		Spec: monitorv1.ServiceMonitorSpec{
 			Endpoints: []monitorv1.Endpoint{
 				{
-					Port: "http",
+					Port: "service",
 					Path: "/metrics",
 				},
 			},

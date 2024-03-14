@@ -30,5 +30,7 @@ COPY --from=builder /app/app /app
 RUN pip install --upgrade pip
 RUN pip install numpy scikit-learn xgboost statsmodels torch torchvision pmdarima joblib
 
+EXPOSE 8080
+
 # 设置容器启动时执行的命令
 ENTRYPOINT ["/app/app"]
