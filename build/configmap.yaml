@@ -33,6 +33,6 @@ data:
         "default_client_timeout": 10,
         "rt_test_epoch": 20,
         "max_qps": 10000,
-        "error_tolerate_rate": 5.0
+        "error_tolerate_rate": 0.05
       }
     }

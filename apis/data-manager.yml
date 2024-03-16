@@ -3,7 +3,7 @@ info:
   title: Data Manager APIs
   version: '1.0'
 servers:
-  - url: https://localhost:10168/service-manager
+  - url: https://localhost:30168/service-manager
 paths:
   /fetch:
     post:

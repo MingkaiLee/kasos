@@ -3,7 +3,7 @@ info:
   title: Model Manager APIs
   version: '1.0'
 servers:
-  - url: https://localhost:10168/model-manager
+  - url: https://localhost:30168/model-manager
 paths:
   /find:
     get:
