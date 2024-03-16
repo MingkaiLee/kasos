@@ -32,7 +32,7 @@ func InitK8sClient() {
 // 获取deployment
 func GetDeployment(ctx context.Context, serviceName string) (d *v1.Deployment, err error) {
 	deploymentName := fmt.Sprintf("%s-deployment", serviceName)
-	d, err = k8sClient.AppsV1().Deployments(serviceName).Get(ctx, deploymentName, metav1.GetOptions{})
+	d, err = k8sClient.AppsV1().Deployments(serviceNamespace).Get(ctx, deploymentName, metav1.GetOptions{})
 	if err != nil {
 		util.LogErrorf("client.GetDeployment error: %v", err)
 	}

@@ -4,6 +4,7 @@ metadata:
   name: mysql-pv
   labels:
     app: kasos
+    tier: mysql
 spec:
   capacity:
     storage: 2Gi
@@ -17,12 +18,8 @@ spec:
   nodeAffinity:
     required:
       nodeSelectorTerms:
-      - matchExpressions:
-        - key: app
-          operator: In
-          values:
-          - kasos
-        - key: tier
-          operator: In
-          values:
-          - mysql
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - minikube

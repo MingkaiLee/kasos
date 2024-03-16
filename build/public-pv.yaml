@@ -4,6 +4,7 @@ metadata:
   name: public-pv
   labels:
     app: kasos
+    tier: public
 spec:
   capacity:
     storage: 2Gi
@@ -17,8 +18,8 @@ spec:
   nodeAffinity:
     required:
       nodeSelectorTerms:
-      - matchExpressions:
-        - key: app
-          operator: In
-          values:
-          - kasos
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - minikube

@@ -34,7 +34,7 @@ docker pull python:3.10.13
 # 拉取mysql基础镜像
 docker pull mysql:8.0
 # 构建pyts(时间序列建模用)基础镜像
-build_image ./build_image_pyts pyts $KASOS_VERSION
+# build_image ./build_image_pyts pyts $KASOS_VERSION
 # 构建镜像
 build_image ../server kasos-server $KASOS_VERSION
 build_image ../trainer kasos-trainer $KASOS_VERSION

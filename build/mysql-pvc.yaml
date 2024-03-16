@@ -3,6 +3,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: mysql-pvc
 spec:
+  selector:
+    matchLabels:
+      app: kasos
+      tier: mysql
   accessModes:
     - ReadWriteOnce
   resources:
