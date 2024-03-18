@@ -15,7 +15,7 @@ var (
 	ValidateDataPath string
 )
 
-const volumeConfFile = "/etc/config/volume.conf"
+const volumeConfFile = "/etc/config/volume.json"
 
 type VolumeConf struct {
 	MountPath        string `json:"mount_path"`
