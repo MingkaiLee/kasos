@@ -1,3 +1,0 @@
-examples/product/models/arima_model filter=lfs diff=lfs merge=lfs -text
-examples/product/models/xgb_model filter=lfs diff=lfs merge=lfs -text
-examples/product/models/lstm_model filter=lfs diff=lfs merge=lfs -text
