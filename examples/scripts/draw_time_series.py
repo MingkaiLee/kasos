@@ -35,7 +35,7 @@ if __name__ == "__main__":
     plt_data = data.head(100)
     sns.set_style("darkgrid")
     sns.lineplot(data=plt_data)
-    plt.xticks(rotation=45)
+    plt.xticks(rotation=45, fontsize=8)
     for index, label in enumerate(plt.gca().xaxis.get_ticklabels()):
         if index % 5 != 0:
             label.set_visible(False)
