@@ -7,12 +7,12 @@ import (
 
 type HpaService struct {
 	gorm.Model
-	ServiceName string   `gorm:"column:service_name;uniqueIndex"`
-	Tags        string   `gorm:"column:tags;index"`
-	Status      string   `gorm:"column:status"`
-	ThreshQPS   uint     `gorm:"column:thresh_qps"`
-	ModelId     uint     `gorm:"column:model_id"`
-	ErrorInfo   string   `gorm:"column:error_info"`
+	ServiceName string   `gorm:"column:service_name;type:VARCHAR(128);uniqueIndex"`
+	Tags        string   `gorm:"column:tags;type:VARCHAR(1024);index"`
+	Status      string   `gorm:"column:status;type:VARCHAR(32)"`
+	ThreshQPS   uint     `gorm:"column:thresh_qps;type:BIGINT"`
+	ModelId     uint     `gorm:"column:model_id;type:BIGINT"`
+	ErrorInfo   string   `gorm:"column:error_info;type:VARCHAR(256)"`
 	HpaModel    HpaModel `gorm:"foreignKey:ModelId"`
 }
 

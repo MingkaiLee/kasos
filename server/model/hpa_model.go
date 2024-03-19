@@ -6,11 +6,11 @@ import (
 
 type HpaModel struct {
 	gorm.Model
-	ModelName   string `gorm:"column:model_name"`
-	Status      string `gorm:"column:status"`
-	TrainScript string `gorm:"column:train_script"`
-	InferScript string `gorm:"column:infer_script"`
-	ErrorInfo   string `gorm:"column:error_info"`
+	ModelName   string `gorm:"column:model_name;type:VARCHAR(128);uniqueIndex"`
+	Status      string `gorm:"column:status;type:VARCHAR(32)"`
+	TrainScript string `gorm:"column:train_script;type:TEXT"`
+	InferScript string `gorm:"column:infer_script;type:TEXT"`
+	ErrorInfo   string `gorm:"column:error_info;type:VARCHAR(256)"`
 }
 
 func (HpaModel) TableName() string {
