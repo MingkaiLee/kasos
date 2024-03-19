@@ -8,7 +8,7 @@ import (
 type HpaService struct {
 	gorm.Model
 	ServiceName string   `gorm:"column:service_name;type:VARCHAR(128);uniqueIndex"`
-	Tags        string   `gorm:"column:tags;type:VARCHAR(1024);index"`
+	Tags        string   `gorm:"column:tags;type:VARCHAR(1024)"`
 	Status      string   `gorm:"column:status;type:VARCHAR(32)"`
 	ThreshQPS   uint     `gorm:"column:thresh_qps;type:BIGINT"`
 	ModelId     uint     `gorm:"column:model_id;type:BIGINT"`

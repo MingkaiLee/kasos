@@ -1,6 +1,6 @@
 import requests
 
-HOST_PORT = "http://127.0.0.1:59794"
+HOST_PORT = "http://127.0.0.1:52143"
 
 
 def service_find(name: str):
@@ -76,8 +76,8 @@ def register_model(name: str, train_script: str, infer_script: str):
     response = requests.post(f"{HOST_PORT}/model-manager/register",
                              json={
                                  "name": name,
-                                 "trainScript": train_script,
-                                 "inferScript": infer_script
+                                 "train_script": train_script,
+                                 "infer_script": infer_script
                              })
     if response.status_code != 200:
         raise Exception(
@@ -110,9 +110,9 @@ def fetch_data(start_time: str, end_time: str, tags: str):
     return response.json()
 
 if __name__ == "__main__":
-    with open("./model_xgb_train.py", "r") as f:
+    with open("./model_lstm_train.py", "r") as f:
         train_script = f.read()
-    with open("./model_xgb_infer.py", "r") as f:
+    with open("./model_lstm_infer.py", "r") as f:
         infer_script = f.read()
-    resp = register_model("xgb_model", train_script, infer_script)
+    resp = register_model("lstm_model", train_script, infer_script)
     print(resp)

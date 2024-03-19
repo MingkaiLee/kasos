@@ -42,7 +42,7 @@ func CallNormalTest(ctx context.Context, req *NormalTesterSettings) (response *h
 		util.LogErrorf("http.CallNormalTest error: %v", err)
 		return
 	}
-	url := fmt.Sprintf("%s/%s", config.HpaExecutorUrl, "/stress-test/normal-test")
+	url := fmt.Sprintf("%s/%s", config.HpaExecutorUrl, "stress-test/normal-test")
 	content, err := jsoniter.Marshal(*req)
 	if err != nil {
 		util.LogErrorf("http.CallNormalTest error: %v", err)
@@ -76,7 +76,7 @@ func CallAddService(ctx context.Context, req *AddServiceRequest) (response *http
 		util.LogErrorf("http.CallAddService error: %v", err)
 		return
 	}
-	url := fmt.Sprintf("%s/%s", config.InferModuleUrl, "/model/validate")
+	url := fmt.Sprintf("%s/%s", config.InferModuleUrl, "model/validate")
 	content, err := jsoniter.Marshal(*req)
 	if err != nil {
 		util.LogErrorf("http.CallAddService error: %v", err)
@@ -110,7 +110,7 @@ func CallModelValidate(ctx context.Context, req *ScriptValidateRequest) (respons
 		util.LogErrorf("http.CallModelValidate error: %v", err)
 		return
 	}
-	url := fmt.Sprintf("%s/%s", config.InferModuleUrl, "/model/validate")
+	url := fmt.Sprintf("%s/%s", config.InferModuleUrl, "model/validate")
 	content, err := jsoniter.Marshal(*req)
 	if err != nil {
 		util.LogErrorf("http.CallModelValidate error: %v", err)
