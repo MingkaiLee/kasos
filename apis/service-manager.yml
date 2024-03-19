@@ -1,0 +1,227 @@
+openapi: '3.0.2'
+info:
+  title: Service Manager APIs
+  version: '1.0'
+servers:
+  - url: https://localhost:30168/service-manager
+paths:
+  /find:
+    get:
+      summary: Query a service that has been successfully registered in the system
+      parameters:
+        - in: query
+          name: name
+          description: Service name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Service name
+                  tags:
+                    type: object
+                    description: Tags of the service which used in the Kubernetes cluster
+                    additionalProperties:
+                      type: string
+                  thresh_qps:
+                    type: integer
+                    description: The QPS threshold of the service
+                  model_name:
+                    type: string
+                    description: The name of the time series model used by the service
+              example:
+                name: "test-service"
+                tags:
+                  app: "test-app"
+                  auto_hpa: "on"
+                thresh_qps: 50
+                model_name: "test-model"
+        '404':
+          description: Not Found. The service does not exist now
+        '500':
+          description: Internal Server Error. Please try again later
+  /list:
+    get:
+      summary: Paginated listing of all services that have been successfully registered in the system, with a maximum of 10 records per page
+      parameters:
+        - in: query
+          name: index
+          description: The index of the service, start from zero. The query will start from the index. Default is zero
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hpa_services:
+                    type: array
+                    description: List of the services. The service information JSON format is the same as the api /find
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Service name
+                        tags:
+                          type: object
+                          description: Tags of the service which used in the Kubernetes cluster
+                          additionalProperties:
+                            type: string
+                        thresh_qps:
+                          type: integer
+                          description: The QPS threshold of the service
+                        model_name:
+                          type: string
+                          description: The name of the time series model used by the service
+                  next_index:
+                    type: integer
+                    description: The next index you should use to query the next page. If it is -1, there is no next page
+              example:
+                hpa_services:
+                  - name: "test-service"
+                    tags:
+                      app: "test-app"
+                      auto_hpa: "on"
+                    thresh_qps: 50
+                    model_name: "test-model"
+                  - name: "my-server"
+                    tags:
+                      app: "my-server"
+                      version: "v1"
+                    thresh_qps: 10
+                    model_name: "my-model"
+                next_index: -1
+        '400':
+          description: Bad Request. Input index value is not an integer
+        '500':
+          description: Internal Server Error. Please try again later
+  /register:
+    post:
+      summary: Register a service in the system
+      requestBody:
+        description: The service to be registered
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - "name"
+                - "tags"
+                - "model_name"
+              properties:
+                name:
+                  type: string
+                  description: Service name
+                tags:
+                  type: object
+                  description: Tags of the service which used in the Kubernetes cluster
+                  additionalProperties:
+                    type: string
+                model_name:
+                  type: string
+                  description: The name of the time series model used by the service
+            example:
+              name: "test-service"
+              tags:
+                app: "test-app"
+                auto_hpa: "on"
+              model_name: "test-model"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accepted:
+                    type: boolean
+                    description: Whether the service is accessible
+                  message:
+                    type: string
+                    description: If the service is not accessible, the reason why will be displayed here
+                example:
+                  accepted: true
+                  message: ""
+        '415':
+          description: Unsupported Media Type. Input is not in JSON format
+        '400':
+          description: Bad Request. Input lacks required fields or has wrong type fields
+        '500':
+          description: Internal Server Error. Please try again later
+  /register-result:
+    get:
+      summary: Querying service registration results. Please only use the api after successfully called the api /register
+      parameters:
+        - in: query
+          name: name
+          description: Service name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Service registration status. "ok", "error" or "testing"
+                  error_info:
+                    type: string
+                    description: If the status is "error", the reason why will be displayed here
+              example:
+                status: "ok"
+                error_info: ""
+        '404':
+          description: Not Found. The service does not exist now
+        '500':
+          description: Internal Server Error. Please try again later
+  /delete:
+    post:
+      summary: Delete a registered service in the system. Please call the api before you delete the service in kubernetes cluster
+      parameters:
+        - in: query
+          name: name
+          description: Service name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the service is deleted
+                  message:
+                    type: string
+                    description: If the service is not deleted, the reason why will be displayed here
+              example:
+                success: true
+                message: ""
+        '404':
+          description: Not Found. Lack name parameter
+        '500':
+          description: Internal Server Error. Please try again later

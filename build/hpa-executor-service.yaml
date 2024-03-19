@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hpa-executor
+  labels:
+    app: kasos
+    tier: hpa-executor
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: kasos
+    tier: hpa-exector

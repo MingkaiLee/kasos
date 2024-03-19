@@ -1,0 +1,173 @@
+openapi: '3.0.2'
+info:
+  title: Model Manager APIs
+  version: '1.0'
+servers:
+  - url: https://localhost:30168/model-manager
+paths:
+  /find:
+    get:
+      summary: Query a time series model that has been successfully added in the system
+      parameters:
+        - in: query
+          name: name
+          description: Model name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Model name
+                  train_script:
+                    type: string
+                    description: The training python script of the model
+                  infer_script:
+                    type: string
+                    description: The inference python script of the model
+              example:
+                name: "default_arima"
+                train_script: "import numpy as np\n#..."
+                infer_script: "import numpy as np\n#..."
+        '404':
+          description: Not Found. The model does not exist now
+        '500':
+          description: Internal Server Error. Please try again later
+  /list:
+    get:
+      summary: Paginated listing of all time series models that have been successfully registered in the system, with a maximum of 10 records per page
+      parameters:
+        - in: query
+          name: index
+          description: The index of the model, start from zero. The query will start from the index. Default is zero
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hpa_services:
+                    type: array
+                    description: List of the models. The model information JSON format is the same as the api /find
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Model name
+                        train_script:
+                          type: string
+                          description: The training python script of the model
+                        infer_script:
+                          type: string
+                          description: The inference python script of the model
+                  next_index:
+                    type: integer
+                    description: The next index you should use to query the next page. If it is -1, there is no next page
+              example:
+                hpa_services:
+                  - name: "default-arima"
+                    train_script: "import numpy as np\n#..."
+                    infer_script: "import numpy as np\n#..."
+                  - name: "default-xgb"
+                    train_script: "import xgboost as xgb\n#..."
+                    infer_script: "import xgboost as xgb\n#..."
+                next_index: -1
+        '400':
+          description: Bad Request. Input index value is not an integer
+        '500':
+          description: Internal Server Error. Please try again later
+  /register:
+    post:
+      summary: Register a new time series model in the system
+      requestBody:
+        description: The model to be registered
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - "name"
+                - "train_script"
+                - "infer_script"
+              properties:
+                name:
+                  type: string
+                  description: Model name
+                train_script:
+                  type: string
+                  description: The training python script of the model
+                infer_script:
+                  type: string
+                  description: The inference python script of the model
+            example:
+              name: "default-lstm"
+              train_script: "import torch.nn as nn\n#..."
+              infer_script: "import torch.nn as nn\n#..."
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accepted:
+                    type: boolean
+                    description: Whether the service is accessible
+                  message:
+                    type: string
+                    description: If the service is not accessible, the reason why will be displayed here
+                example:
+                  accepted: true
+                  message: ""
+        '415':
+          description: Unsupported Media Type. Input is not in JSON format
+        '400':
+          description: Bad Request. Input lacks required fields or has wrong type fields
+        '500':
+          description: Internal Server Error. Please try again later
+  /register-result:
+    get:
+      summary: Querying model registration results. Please only use the api after successfully called the api /register
+      parameters:
+        - in: query
+          name: name
+          description: Model name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Model registration status. "ok", "error" or "testing"
+                  error_info:
+                    type: string
+                    description: If the status is "error", the reason why will be displayed here
+              example:
+                status: "error"
+                error_info: "failed when try to execute the train_script, python error: ..."
+        '404':
+          description: Not Found. The service does not exist now
+        '500':
+          description: Internal Server Error. Please try again later

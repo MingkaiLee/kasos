@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-mysql
+  labels:
+    app: kasos
+    tier: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kasos
+      tier: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: kasos
+        tier: mysql
+    spec:
+      containers:
+      - image: mysql:8.0
+        name: server-mysql
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: 500m
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "2024kasos"
+        - name: MYSQL_DATABASE
+          value: kasos
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc

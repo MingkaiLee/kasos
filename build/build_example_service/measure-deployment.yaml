@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: measure
+  labels:
+    auto_hpa: "on"
+    service_name: "measure"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      auto_hpa: "on"
+      service_name: "measure"
+  template:
+    metadata:
+      labels:
+        auto_hpa: "on"
+        service_name: "measure"
+    spec:
+      containers:
+      - name: measure
+        image: example-measure:v0.1
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: public-volume
+          mountPath: /mnt
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 250m
+      volumes:
+        - name: public-volume
+          persistentVolumeClaim:
+            claimName: public-pvc

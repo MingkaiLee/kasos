@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    app: kasos
+    tier: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kasos
+      tier: server
+  template:
+    metadata:
+      labels:
+        app: kasos
+        tier: server
+    spec:
+      serviceAccountName: kasos-controller
+      containers:
+      - name: server
+        image: kasos-server:v0.1
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+        - name: public-volume
+          mountPath: /mnt
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: 500m
+      volumes:
+        - name: config-volume
+          configMap:
+            name: kasos-config
+            items:
+              - key: "url-conf-json"
+                path: "url.json"
+              - key: "db-conf-json"
+                path: "db.json"
+        - name: public-volume
+          persistentVolumeClaim:
+            claimName: public-pvc
