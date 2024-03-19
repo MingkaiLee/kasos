@@ -39,6 +39,8 @@ else
     docker pull python:3.10.13
     # 拉取mysql基础镜像
     docker pull mysql:8.0
+    # 拉取debian镜像
+    docker pull debian:stable-slim
     # 构建pyts(时间序列建模用)基础镜像
     build_image ./build_image_pyts pyts $KASOS_VERSION
 fi

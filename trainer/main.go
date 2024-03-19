@@ -24,7 +24,7 @@ func main() {
 	// 创建拉取数据的目标文件夹
 	year, month, day := currentTime.Date()
 	fileDirName := fmt.Sprintf("%s/%d-%d-%d", config.DataDirectory, year, month, day)
-	err = os.MkdirAll(fileDirName, 0755)
+	err = os.MkdirAll(fileDirName, 0777)
 	if err != nil {
 		util.LogErrorf("process stopped, error: %v", err)
 		panic(err)

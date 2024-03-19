@@ -10,7 +10,7 @@ spec:
   ports:
     - name: "service"
       port: 8080
-      nodePort: 10188
+      nodePort: 30188
   selector:
     auto_hpa: "on"
     service_name: "measure"

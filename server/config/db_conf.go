@@ -36,5 +36,5 @@ func initDBConf() {
 		panic(err)
 	}
 
-	DSN = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName, conf.Charset)
+	DSN = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=true", conf.Username, conf.Password, conf.Host, conf.Port, conf.DBName, conf.Charset)
 }

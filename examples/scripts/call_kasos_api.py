@@ -1,6 +1,6 @@
 import requests
 
-HOST_PORT = "http://127.0.0.1:52143"
+HOST_PORT = "http://127.0.0.1:54705"
 
 
 def service_find(name: str):
@@ -110,9 +110,18 @@ def fetch_data(start_time: str, end_time: str, tags: str):
     return response.json()
 
 if __name__ == "__main__":
-    with open("./model_lstm_train.py", "r") as f:
-        train_script = f.read()
-    with open("./model_lstm_infer.py", "r") as f:
-        infer_script = f.read()
-    resp = register_model("lstm_model", train_script, infer_script)
+    # with open("./model_lstm_train.py", "r") as f:
+    #     train_script = f.read()
+    # with open("./model_lstm_infer.py", "r") as f:
+    #     infer_script = f.read()
+    # resp = register_model("lstm5", train_script, infer_script)
+    # print(resp)
+
+    # resp = list_models(0)
+    # print(resp)
+
+    # resp = register_service("measure", {"auto_hpa": "on", "service_name": "measure"}, "lstm5")
+    # print(resp)
+
+    resp = delete_service("measure")
     print(resp)

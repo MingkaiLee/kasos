@@ -32,6 +32,13 @@ func (t *Trainer) Train() (err error) {
 		year, month, day, t.serviceName)
 	scriptPath := fmt.Sprintf("%s/train/%s.py",
 		config.ScriptDirectory, t.modelName)
+	modelDir := fmt.Sprintf("%s/%s", config.ModelDirectory, t.serviceName)
+	// 先尝试创建服务专用模型目录
+	err = os.MkdirAll(modelDir, 0777)
+	if err != nil {
+		util.LogErrorf("train.Trainer.Train, create model dir error: %v", err)
+		return
+	}
 	modelPath := fmt.Sprintf("%s/%s/%s",
 		config.ModelDirectory, t.serviceName, t.modelName)
 	// 检查数据是否已准备好

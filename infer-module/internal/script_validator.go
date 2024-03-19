@@ -129,6 +129,8 @@ func (s *ScriptValidator) Run() {
 		err = firstTrainCmd.Run()
 		if err != nil {
 			r.Err = err
+			output, _ := firstTrainCmd.CombinedOutput()
+			util.LogErrorf("internal.ScriptValidator.Run: command output: %s", string(output))
 			util.LogErrorf("internal.ScriptValidator.Run: first train error: %v", err)
 			return
 		}
@@ -137,6 +139,8 @@ func (s *ScriptValidator) Run() {
 		err = furtherTrainCmd.Run()
 		if err != nil {
 			r.Err = err
+			output, _ := furtherTrainCmd.CombinedOutput()
+			util.LogErrorf("internal.ScriptValidator.Run: command output: %s", string(output))
 			util.LogErrorf("internal.ScriptValidator.Run: further train error: %v", err)
 			return
 		}
@@ -145,6 +149,8 @@ func (s *ScriptValidator) Run() {
 		err = inferCmd.Run()
 		if err != nil {
 			r.Err = err
+			output, _ := inferCmd.CombinedOutput()
+			util.LogErrorf("internal.ScriptValidator.Run: command output: %s", string(output))
 			util.LogErrorf("internal.ScriptValidator.Run: infer error: %v", err)
 			return
 		}
