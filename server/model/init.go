@@ -24,4 +24,8 @@ func InitModel() {
 		util.LogErrorf("panic: %v, dsn: %s", err, config.DSN)
 		panic(err)
 	}
+	err = db.AutoMigrate(&HpaService{}, &HpaModel{})
+	if err != nil {
+		util.LogErrorf("panic: %v", err)
+	}
 }

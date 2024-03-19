@@ -5,8 +5,7 @@ from datetime import datetime, timedelta
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="infer")
+    parser = argparse.ArgumentParser(description="infer")
     parser.add_argument("-s",
                         "--script",
                         type=str,
@@ -40,11 +39,17 @@ if __name__ == "__main__":
         vals = line.strip().split("\t")
         timestamp = vals[0]
         value = vals[1]
-        cmd = subprocess.run(["python3", args.script, "-t", timestamp, "-v", value, "-m", args.model], stdout=subprocess.PIPE)
-        infer_time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S") + timedelta(seconds=15)
+        cmd = subprocess.run([
+            "python3", args.script, "-t", timestamp, "-v", value, "-m",
+            args.model
+        ],
+                             stdout=subprocess.PIPE)
+        infer_time = datetime.strptime(
+            timestamp, "%Y-%m-%d %H:%M:%S") + timedelta(seconds=15)
         infer_timestamp = infer_time.strftime("%Y-%m-%d %H:%M:%S")
         infer_value = cmd.stdout.decode("utf-8").strip()
         result.append("{:s}\t{:s}".format(infer_timestamp, infer_value))
-        print("{} {} {} {}".format(timestamp, value, infer_timestamp, infer_value))
+        print("{} {} {} {}".format(timestamp, value, infer_timestamp,
+                                   infer_value))
     with open(args.output, "w+") as f:
         f.writelines(result)
