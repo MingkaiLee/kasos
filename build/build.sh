@@ -57,9 +57,14 @@ cmd_log "kubectl apply -f ./configmap.yaml"
 # 创建mysql Deployment and Service
 cmd_log "kubectl apply -f ./mysql-deployment.yaml"
 cmd_log "kubectl apply -f ./mysql-service.yaml"
+# 等待mysql的pod就绪
+kubectl wait pods --for=condition=Ready -l app=kasos,tier=mysql
 # 创建server Deployment and Service
 cmd_log "kubectl apply -f ./server-deployment.yaml"
 cmd_log "kubectl apply -f ./server-service.yaml"
+# 等待server的pod就绪
+# 等待mysql的pod就绪
+kubectl wait pods --for=condition=Ready -l app=kasos,tier=server
 # 创建hpa-executor Deployment and Service
 cmd_log "kubectl apply -f ./hpa-executor-deployment.yaml"
 cmd_log "kubectl apply -f ./hpa-executor-service.yaml"
