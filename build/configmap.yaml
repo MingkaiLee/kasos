@@ -17,7 +17,7 @@ data:
       "host": "10.96.0.101",
       "port": 3306,
       "dbname": "kasos",
-      "charst": "utf8mb4"
+      "charset": "utf8mb4"
     }
   volume-conf-json: |
     {

@@ -1,6 +1,6 @@
 import requests
 
-HOST_PORT = "http://localhost:10168"
+HOST_PORT = "http://127.0.0.1:59794"
 
 
 def service_find(name: str):
@@ -21,7 +21,7 @@ def list_services(index: int):
     return response.json()
 
 
-def register_service(name: str, tags: map[str, str], model_name: str):
+def register_service(name: str, tags: dict[str, str], model_name: str):
     response = requests.post(f"{HOST_PORT}/service-manager/register",
                              json={
                                  "name": name,
@@ -108,3 +108,11 @@ def fetch_data(start_time: str, end_time: str, tags: str):
             f"call kasos api /data-manager/fetch failed, code: {response.status_code}, msg: {response.text}"
         )
     return response.json()
+
+if __name__ == "__main__":
+    with open("./model_xgb_train.py", "r") as f:
+        train_script = f.read()
+    with open("./model_xgb_infer.py", "r") as f:
+        infer_script = f.read()
+    resp = register_model("xgb_model", train_script, infer_script)
+    print(resp)

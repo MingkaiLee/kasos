@@ -21,7 +21,7 @@ func InitModel() {
 
 	db, err = gorm.Open(mysql.Open(config.DSN), &gorm.Config{})
 	if err != nil {
-		util.LogErrorf("panic: %v", err)
+		util.LogErrorf("panic: %v, dsn: %s", err, config.DSN)
 		panic(err)
 	}
 }
