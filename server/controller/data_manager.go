@@ -12,7 +12,7 @@ import (
 func initDataManager() {
 	// data-manager api
 	dataManager := H.Group("/data-manager")
-	dataManager.POST("/fetch")
+	dataManager.POST("/fetch", FetchSerialData)
 }
 
 func FetchSerialData(ctx context.Context, c *app.RequestContext) {

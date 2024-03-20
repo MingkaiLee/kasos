@@ -28,7 +28,7 @@ func FindHpaService(ctx context.Context, serviceName string) (response *HpaServi
 	response.Name = &svc.ServiceName
 	response.Tags = util.RevertTags(svc.Tags)
 	response.ThreshQPS = &svc.ThreshQPS
-	response.ModelName = &svc.HpaModel.ModelName
+	response.ModelName = &svc.ModelName
 
 	return
 }

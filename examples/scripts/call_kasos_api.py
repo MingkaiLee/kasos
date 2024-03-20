@@ -1,6 +1,6 @@
 import requests
 
-HOST_PORT = "http://127.0.0.1:60151"
+HOST_PORT = "http://127.0.0.1:60931"
 
 
 def service_find(name: str):
@@ -107,6 +107,7 @@ def fetch_data(start_time: str, end_time: str, tags: str):
         raise Exception(
             f"call kasos api /data-manager/fetch failed, code: {response.status_code}, msg: {response.text}"
         )
+    print(response.headers)
     return response.json()
 
 if __name__ == "__main__":
@@ -114,14 +115,20 @@ if __name__ == "__main__":
     #     train_script = f.read()
     # with open("./model_lstm_infer.py", "r") as f:
     #     infer_script = f.read()
-    # resp = register_model("lstm1", train_script, infer_script)
+    # resp = register_model("lstm", train_script, infer_script)
     # print(resp)
 
     # resp = list_models(0)
     # print(resp)
 
-    resp = register_service("measure", {"auto_hpa": "on", "service_name": "measure"}, "lstm1")
-    print(resp)
+    # resp = register_service("measure", {"auto_hpa": "on", "service_name": "measure"}, "lstm")
+    # print(resp)
+
+    # resp = list_services(0)
+    # print(resp)
 
     # resp = delete_service("measure")
     # print(resp)
+
+    resp = fetch_data("2024-03-20 00:00:00", "2024-03-20 18:00:00", 'auto_hpa="on",service_name="measure"')
+    print(resp)

@@ -20,13 +20,13 @@ func RandomHash(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			LogErrorf("error: %v", err)
 		}
-		LogInfof("md5: %s", md5Hasher.Sum(nil))
+		LogInfof("loop: %d, md5: %s", i, md5Hasher.Sum(nil))
 	}
 	w.WriteHeader(http.StatusOK)
 	diff := float64(time.Since(startTime).Milliseconds()) / float64(1000)
 	LatencyMetric.WithLabelValues("measure").Observe(diff)
 	ServiceQPSMetric.WithLabelValues("on", "measure").Inc()
-	LogErrorf("success, latency: %.4f", diff)
+	LogInfof("success, latency: %.4f", diff)
 }
 
 func randomString(length int) string {

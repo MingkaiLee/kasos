@@ -25,6 +25,7 @@ func FetchSerialData(ctx context.Context, content []byte) (response *FetchSerial
 	var req FetchSerialDataRequest
 	err = jsoniter.Unmarshal(content, &req)
 	response = new(FetchSerialDataResponse)
+	util.LogInfof("fetch serial data request: %+v", req)
 	if err != nil {
 		util.LogErrorf("failed to unmarshal request, error: %v", err)
 		response.Message = err.Error()
@@ -43,6 +44,7 @@ func FetchSerialData(ctx context.Context, content []byte) (response *FetchSerial
 		return
 	}
 	tags := util.RevertTags(req.Tags)
+	util.LogInfof("start: %v, end: %v, tags: %v", startTime, endTime, tags)
 	data, err := client.FetchSerialData(ctx, startTime, endTime, tags)
 	if err != nil {
 		util.LogErrorf("failed to fetch serial data, error: %v", err)

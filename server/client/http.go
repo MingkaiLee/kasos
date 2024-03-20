@@ -76,7 +76,7 @@ func CallAddService(ctx context.Context, req *AddServiceRequest) (response *http
 		util.LogErrorf("http.CallAddService error: %v", err)
 		return
 	}
-	url := fmt.Sprintf("%s/%s", config.InferModuleUrl, "model/validate")
+	url := fmt.Sprintf("%s/%s", config.InferModuleUrl, "service/add")
 	content, err := jsoniter.Marshal(*req)
 	if err != nil {
 		util.LogErrorf("http.CallAddService error: %v", err)

@@ -34,7 +34,7 @@ func RegisterService(ctx context.Context, content []byte) (response *RegisterSer
 	util.LogInfof("register service request: %+v", req)
 
 	// look up model information
-	modelID, err := model.HpaModelGetID(req.ModelName)
+	_, err = model.HpaModelGetID(req.ModelName)
 	if err != nil {
 		util.LogErrorf("failed to get model id, error: %v", err)
 		response.Message = err.Error()
@@ -42,12 +42,19 @@ func RegisterService(ctx context.Context, content []byte) (response *RegisterSer
 	}
 
 	// register service
-	err = model.HpaServiceCreate(req.Name, req.Tags, modelID)
+	err = model.HpaServiceCreate(req.Name, req.Tags, req.ModelName)
 	if err != nil {
 		util.LogErrorf("failed to create service, error: %v", err)
 		response.Message = err.Error()
 		return
 	}
+
+	// 如果失败了删除记录
+	defer func(e error) {
+		if e != nil {
+			model.HpaServiceDelete(req.Name)
+		}
+	}(err)
 
 	// send stress test request to hpa-executor
 	// 固定测试的接口

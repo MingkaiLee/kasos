@@ -35,7 +35,7 @@ func ListHpaServices(ctx context.Context, startIndex uint) (response *ListHpaSer
 			Name:      &svcs[i].ServiceName,
 			Tags:      util.RevertTags(svcs[i].Tags),
 			ThreshQPS: &svcs[i].ThreshQPS,
-			ModelName: &svcs[i].HpaModel.ModelName,
+			ModelName: &svcs[i].ModelName,
 		}
 	}
 	return

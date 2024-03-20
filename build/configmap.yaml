@@ -30,7 +30,7 @@ data:
   module-conf-json: |
     {
       "hpa_executor_conf": {
-        "default_client_timeout": 10,
+        "default_client_timeout": 10000,
         "rt_test_epoch": 20,
         "max_qps": 10000,
         "error_tolerate_rate": 0.05

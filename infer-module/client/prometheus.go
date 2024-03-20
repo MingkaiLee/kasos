@@ -15,7 +15,7 @@ import (
 var prometheusClient api.Client
 
 const (
-	qpsQueryPromQL = `rate(service_qps{auto_hpa="on",service_name="%s"}[15s])`
+	qpsQueryPromQL = `irate(service_qps{auto_hpa="on",service_name="%s"}[1m])`
 )
 
 type SerialDataPoint struct {

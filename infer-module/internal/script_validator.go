@@ -125,6 +125,10 @@ func (s *ScriptValidator) Run() {
 		// 首次训练测试
 		// 创建一个模型文件的路径
 		modelPath := fmt.Sprintf("%s/tmp/%s", config.ModelDirectory, uuid.NewString())
+		// 结束时删除临时模型文件
+		defer func() {
+			os.Remove(modelPath)
+		}()
 		firstTrainCmd := exec.Command("python3", trainScriptFile.Name(), "--new", "-d", config.ValidateDataPath, "-m", modelPath)
 		err = firstTrainCmd.Run()
 		if err != nil {

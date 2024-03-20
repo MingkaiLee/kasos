@@ -5,7 +5,7 @@
 
 KASOS_VERSION=v0.1
 
-REBUILD=${1:0}
+REBUILD=${1:-0}
 
 build_image() {
     local image_path=$1
