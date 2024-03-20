@@ -1,6 +1,6 @@
 import requests
 
-HOST_PORT = "http://127.0.0.1:54705"
+HOST_PORT = "http://127.0.0.1:60151"
 
 
 def service_find(name: str):
@@ -114,14 +114,14 @@ if __name__ == "__main__":
     #     train_script = f.read()
     # with open("./model_lstm_infer.py", "r") as f:
     #     infer_script = f.read()
-    # resp = register_model("lstm5", train_script, infer_script)
+    # resp = register_model("lstm1", train_script, infer_script)
     # print(resp)
 
     # resp = list_models(0)
     # print(resp)
 
-    # resp = register_service("measure", {"auto_hpa": "on", "service_name": "measure"}, "lstm5")
-    # print(resp)
-
-    resp = delete_service("measure")
+    resp = register_service("measure", {"auto_hpa": "on", "service_name": "measure"}, "lstm1")
     print(resp)
+
+    # resp = delete_service("measure")
+    # print(resp)
