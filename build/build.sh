@@ -32,6 +32,8 @@ eval $(minikube -p minikube docker-env)
 if [ $REBUILD == 1 ]; then
     echo ">>> rebuid: remove old images..."
     cmd_log "docker image rm kasos-infer-module:v0.1 kasos-trainer:v0.1 kasos-hpa-executor:v0.1 kasos-server:v0.1"
+    kubectl delete all --all -n=default
+    kubectl delete servicemonitor measure-monitor -n=monitoring
 else
     # 拉取golang基础镜像
     docker pull golang:1.21.6

@@ -44,13 +44,13 @@ class lstm(nn.Module):
 
 def gen_data(timestamp: str, value: float) -> dict:
     t = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-    t_ref = t.replace(hour=0, minute=0, second=0)
+    t_ref = t.replace(minute=0, second=0)
     diff_sec = (t - t_ref).total_seconds()
-    t_range = [0, 24 * 60 * 60 - 15]
+    t_range = [0, 60 * 60 - 15]
     for i in range(4):
         v = diff_sec - (3 - i) * 15
         if v < 0:
-            t_range.append(24 * 60 * 60 + v)
+            t_range.append(60 * 60 + v)
         else:
             t_range.append(v)
     scalar = MinMaxScaler((-1, 1))
@@ -61,7 +61,7 @@ def gen_data(timestamp: str, value: float) -> dict:
     return torch.tensor([data])
 
 
-qps_scale = 100
+qps_scale = 10
 
 if __name__ == "__main__":
     args = parse_args_infer()

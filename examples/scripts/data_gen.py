@@ -48,7 +48,7 @@ element = [[5, 10, 20, 30, 35, 40, 50, 60, 70, 75, 80, 85],
 
 def gen_data_base(date: str, base: int) -> list[tuple[str, float]]:
     date_start = datetime.strptime(date, "%Y-%m-%d")
-    date_end = date_start + timedelta(days=1)
+    date_end = date_start + timedelta(hours=1)
     res = list()
     while date_start < date_end:
         s = random.randint(0, 4)

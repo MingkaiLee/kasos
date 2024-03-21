@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"runtime/debug"
 	"time"
 
 	"github.com/MingkaiLee/kasos/infer-module/util"
@@ -24,6 +25,7 @@ func (c *CronJob) Start() {
 	go func() {
 		util.LogInfof("start infer loop, time: %s", time.Now().Format(time.DateTime))
 		for range c.ticker.C {
+			util.LogInfof("infer loop, time: %s", time.Now().Format(time.DateTime))
 			c.Inferer.Infer()
 		}
 	}()
@@ -41,12 +43,21 @@ type AddServiceRequest struct {
 }
 
 func AddService(ctx context.Context, content []byte) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = r.(error)
+			util.LogErrorf("AddService panic: %v", r)
+			util.LogErrorf("Stack trace: %s", string(debug.Stack()))
+		}
+	}()
 	var req AddServiceRequest
 	err = jsoniter.Unmarshal(content, &req)
 	if err != nil {
 		util.LogErrorf("unmarshal AddServiceRequest error: %v", err)
 		return
 	}
+	util.LogInfof("AddServiceRequest: %+v", req)
 	InferCronJob.Inferer.AddService(req.ServiceName, req.ModelName, req.Tags)
+	util.LogInfof("AddService done")
 	return
 }

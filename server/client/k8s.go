@@ -64,7 +64,7 @@ func CreateMonitorService(ctx context.Context, serviceName string, tags map[stri
 				{
 					Port:     "service",
 					Path:     "/metrics",
-					Interval: monitorv1.Duration("15s"),
+					Interval: monitorv1.Duration("5s"),
 				},
 			},
 			NamespaceSelector: monitorv1.NamespaceSelector{

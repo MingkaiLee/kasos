@@ -31,13 +31,13 @@ func FetchSerialData(ctx context.Context, content []byte) (response *FetchSerial
 		response.Message = err.Error()
 		return
 	}
-	startTime, err := time.Parse(req.StartTime, time.DateTime)
+	startTime, err := time.Parse(time.DateTime, req.StartTime)
 	if err != nil {
 		util.LogErrorf("failed to parse start time, error: %v", err)
 		response.Message = err.Error()
 		return
 	}
-	endTime, err := time.Parse(req.EndTime, time.DateTime)
+	endTime, err := time.Parse(time.DateTime, req.EndTime)
 	if err != nil {
 		util.LogErrorf("failed to parse end time, error: %v", err)
 		response.Message = err.Error()

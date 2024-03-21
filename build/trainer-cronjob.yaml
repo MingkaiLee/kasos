@@ -17,6 +17,8 @@ spec:
             volumeMounts:
             - name: public-volume
               mountPath: /mnt
+            - name: config-volume
+              mountPath: /etc/config
             resources:
               limits:
                 memory: 2Gi
@@ -25,4 +27,12 @@ spec:
           - name: public-volume
             persistentVolumeClaim:
               claimName: public-pvc
+          - name: config-volume
+            configMap:
+              name: kasos-config
+              items:
+                - key: "url-conf-json"
+                  path: "url.json"
+                - key: "volume-conf-json"
+                  path: "volume.json"
           restartPolicy: Never
