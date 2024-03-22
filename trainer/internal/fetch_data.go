@@ -110,10 +110,23 @@ func mergeData(finalFileName string, subFiles []string) (err error) {
 	return
 }
 
-func (worker *FetchDataWorker) Run() (err error) {
+func (worker *FetchDataWorker) Run(dirName string) (err error) {
 	util.LogInfof("internal.FetchDataWorker.Run: start to fetch data of service %s", worker.serviceName)
+	// 测试版的训练周期是1小时
 	ctx := context.Background()
-	year, month, day := worker.date.Date()
+	finalFileName := fmt.Sprintf("%s/%s.csv", dirName, worker.serviceName)
+	// 时间段的中止时间为当前时间截断到小时
+	endTime := worker.date.Truncate(time.Hour)
+	// 时间段的开始时间为结束时间减去1小时
+	startTime := endTime.Add(-time.Hour)
+	// 开始拉取数据
+	serialData, err := client.FetchSerialData(ctx, startTime, endTime, worker.serviceName)
+	if err != nil {
+		util.LogErrorf("internal.FetchDataWorker.Run error: %v", err)
+		return
+	}
+	// 保存数据
+	err = serialDataSave(serialData, finalFileName)
 
 	return
 	// timeInterval := 24 / worker.workerNumber

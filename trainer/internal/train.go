@@ -24,12 +24,9 @@ func NewTrainer(serviceName, modelName string, date time.Time) *Trainer {
 	}
 }
 
-func (t *Trainer) Train() (err error) {
+func (t *Trainer) Train(dataDirName string) (err error) {
 	// 路径准备
-	year, month, day := t.date.Date()
-	dataPath := fmt.Sprintf("%s/%d-%d-%d/%s.csv",
-		config.DataDirectory,
-		year, month, day, t.serviceName)
+	dataPath := fmt.Sprintf("%s/%s", dataDirName, t.serviceName)
 	scriptPath := fmt.Sprintf("%s/train/%s.py",
 		config.ScriptDirectory, t.modelName)
 	modelDir := fmt.Sprintf("%s/%s", config.ModelDirectory, t.serviceName)

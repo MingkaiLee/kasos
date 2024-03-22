@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: trainer
 spec:
-  schedule: "0 * * * *"
+  schedule: "5 * * * *"
   concurrencyPolicy: Forbid
   startingDeadlineSeconds: 1800
   jobTemplate:
