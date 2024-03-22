@@ -61,7 +61,7 @@ def gen_data(timestamp: str, value: float) -> dict:
     return torch.tensor([data])
 
 
-qps_scale = 10
+qps_scale = 20
 
 if __name__ == "__main__":
     args = parse_args_infer()

@@ -89,7 +89,7 @@ class lstm(nn.Module):
         return predictions[-1]
 
 
-qps_scale = 10
+qps_scale = 20
 epochs = 100
 
 if __name__ == "__main__":
