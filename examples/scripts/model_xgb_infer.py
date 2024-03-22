@@ -20,13 +20,13 @@ def parse_args_infer() -> argparse.Namespace:
 
 def prepare_data(timestamp: str, value: float):
     t = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-    t_ref = t.replace(hour=0, minute=0, second=0)
+    t_ref = t.replace(minute=0, second=0)
     diff_sec = (t - t_ref).total_seconds()
     vec = list()
     for i in range(4):
         v = diff_sec - (3 - i) * 15
         if v < 0:
-            vec.append(24 * 60 * 60 + v)
+            vec.append(60 * 60 + v)
         else:
             vec.append(v)
     vec.append(value)

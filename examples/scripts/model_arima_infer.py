@@ -18,7 +18,7 @@ def parse_args_infer() -> argparse.Namespace:
 
 def timestamp_2_index(timestamp: str) -> int:
     t = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-    t_ref = t.replace(hour=0, minute=0, second=0)
+    t_ref = t.replace(minute=0, second=0)
     diff_sec = (t - t_ref).total_seconds()
 
     return round(diff_sec / 15)
