@@ -3,7 +3,6 @@ package internal
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"time"
@@ -175,16 +174,16 @@ func (s *ScriptValidator) Run() {
 			return
 		}
 		defer inferFormalFile.Close()
-		_, err = io.Copy(trainFormalFile, trainScriptFile)
+		_, err = trainFormalFile.WriteString(*s.trainScript)
 		if err != nil {
 			r.Err = err
-			util.LogErrorf("internal.ScriptValidator.Run: copy train script error: %v", err)
+			util.LogErrorf("internal.ScriptValidator.Run: write train script error: %v", err)
 			return
 		}
-		_, err = io.Copy(inferFormalFile, inferScriptFile)
+		_, err = inferFormalFile.WriteString(*s.inferScript)
 		if err != nil {
 			r.Err = err
-			util.LogErrorf("internal.ScriptValidator.Run: copy infer script error: %v", err)
+			util.LogErrorf("internal.ScriptValidator.Run: write infer script error: %v", err)
 			return
 		}
 	}()

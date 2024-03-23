@@ -25,7 +25,7 @@ var (
 const timeStep = 15
 
 func init() {
-	flag.StringVar(&url, "url", "http://127.0.0.1:52074/stress-test", "url of the service")
+	flag.StringVar(&url, "url", "http://127.0.0.1:63062/stress-test", "url of the service")
 	flag.StringVar(&qpsFile, "qps", "./qps_simulator.csv", "qps file")
 	flag.StringVar(&logOutput, "log", "./test.log", "log file")
 	flag.Parse()

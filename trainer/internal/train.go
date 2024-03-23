@@ -26,7 +26,7 @@ func NewTrainer(serviceName, modelName string, date time.Time) *Trainer {
 
 func (t *Trainer) Train(dataDirName string) (err error) {
 	// 路径准备
-	dataPath := fmt.Sprintf("%s/%s", dataDirName, t.serviceName)
+	dataPath := fmt.Sprintf("%s/%s.csv", dataDirName, t.serviceName)
 	scriptPath := fmt.Sprintf("%s/train/%s.py",
 		config.ScriptDirectory, t.modelName)
 	modelDir := fmt.Sprintf("%s/%s", config.ModelDirectory, t.serviceName)
@@ -62,6 +62,7 @@ func (t *Trainer) Train(dataDirName string) (err error) {
 	modelFileStat, err := os.Stat(modelPath)
 	if os.IsNotExist(err) {
 		// 模型不存在, 则首次训练
+		util.LogInfof("train.Trainer.Train, train command: python3 %s --new -d %s -m %s", scriptPath, dataPath, modelPath)
 		cmd := exec.Command("python3", scriptPath, "--new", "-d", dataPath, "-m", modelPath)
 		err = cmd.Run()
 		if err != nil {
@@ -75,6 +76,7 @@ func (t *Trainer) Train(dataDirName string) (err error) {
 			return
 		}
 		// 模型已存在, 迭代训练
+		util.LogInfof("train.Trainer.Train, train command: python3 %s -d %s -m %s", scriptPath, dataPath, modelPath)
 		cmd := exec.Command("python3", scriptPath, "-d", dataPath, "-m", modelPath)
 		err = cmd.Run()
 		if err != nil {

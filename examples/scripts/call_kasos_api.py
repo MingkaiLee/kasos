@@ -1,6 +1,6 @@
 import requests
 
-HOST_PORT = "http://127.0.0.1:51126"
+HOST_PORT = "http://127.0.0.1:63164"
 
 
 def service_find(name: str):
@@ -124,11 +124,11 @@ if __name__ == "__main__":
     # resp = register_service("measure", {"auto_hpa": "on", "service_name": "measure"}, "lstm")
     # print(resp)
 
-    # resp = list_services(0)
-    # print(resp)
+    resp = list_services(0)
+    print(resp)
 
     # resp = delete_service("measure")
     # print(resp)
 
-    resp = fetch_data("2024-03-21 09:00:00", "2024-03-21 12:00:00", 'auto_hpa="on",service_name="measure"')
-    print(resp)
+    # resp = fetch_data("2024-03-21 09:00:00", "2024-03-21 12:00:00", 'auto_hpa="on",service_name="measure"')
+    # print(resp)

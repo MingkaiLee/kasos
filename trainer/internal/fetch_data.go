@@ -119,6 +119,7 @@ func (worker *FetchDataWorker) Run(dirName string) (err error) {
 	endTime := worker.date.Truncate(time.Hour)
 	// 时间段的开始时间为结束时间减去1小时
 	startTime := endTime.Add(-time.Hour)
+	endTime = endTime.Add(-15 * time.Second)
 	// 开始拉取数据
 	serialData, err := client.FetchSerialData(ctx, startTime, endTime, worker.serviceName)
 	if err != nil {
