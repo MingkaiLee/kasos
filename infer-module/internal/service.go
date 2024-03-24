@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 
 	"github.com/MingkaiLee/kasos/infer-module/client"
 	"github.com/MingkaiLee/kasos/infer-module/config"
@@ -142,6 +143,7 @@ func (s *Service) infer(data client.SerialDataPoint) (prediction int, err error)
 		}
 		// 获取预测值
 		result := out.String()
+		result = strings.Trim(result, "\n")
 		// 将预测值转为float64类型
 		p, e := strconv.ParseFloat(result, 64)
 		if e != nil {
