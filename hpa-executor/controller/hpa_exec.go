@@ -11,7 +11,7 @@ import (
 
 func initHpaExec() {
 	grp := H.Group("/hpa-exec")
-	grp.POST("/report-qps")
+	grp.POST("/report-qps", ReportQPS)
 }
 
 // 上报QPS预测值辅助自动扩缩容的接口

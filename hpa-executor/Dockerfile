@@ -20,7 +20,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app
 
 # 第二阶段：创建运行环境
 # 使用 scratch 作为最终镜像的基础镜像
-FROM scratch
+FROM debian:stable-slim
 
 # 从 builder 阶段复制编译好的二进制文件到当前阶段的根目录
 COPY --from=builder /app/app /

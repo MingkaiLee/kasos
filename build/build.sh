@@ -5,6 +5,8 @@
 
 KASOS_VERSION=v0.1
 
+REBUILD=${1:-0}
+
 build_image() {
     local image_path=$1
     local image_name=$2
@@ -27,14 +29,23 @@ start=$(date +%s)
 # 切换docker环境
 eval $(minikube -p minikube docker-env)
 
-# 拉取golang基础镜像
-docker pull golang:1.21.6
-# 拉取python基础镜像
-docker pull python:3.10.13
-# 拉取mysql基础镜像
-docker pull mysql:8.0
-# 构建pyts(时间序列建模用)基础镜像
-# build_image ./build_image_pyts pyts $KASOS_VERSION
+if [ $REBUILD == 1 ]; then
+    echo ">>> rebuid: remove old images..."
+    cmd_log "docker image rm kasos-infer-module:v0.1 kasos-trainer:v0.1 kasos-hpa-executor:v0.1 kasos-server:v0.1"
+    kubectl delete all --all -n=default
+    kubectl delete servicemonitor measure-monitor -n=monitoring
+else
+    # 拉取golang基础镜像
+    docker pull golang:1.21.6
+    # 拉取python基础镜像
+    docker pull python:3.10.13
+    # 拉取mysql基础镜像
+    docker pull mysql:8.0
+    # 拉取debian镜像
+    docker pull debian:stable-slim
+    # 构建pyts(时间序列建模用)基础镜像
+    build_image ./build_image_pyts pyts $KASOS_VERSION
+fi
 # 构建镜像
 build_image ../server kasos-server $KASOS_VERSION
 build_image ../trainer kasos-trainer $KASOS_VERSION
@@ -48,8 +59,8 @@ cmd_log "kubectl apply -f ./role-binding.yaml"
 # 创建存储类
 cmd_log "kubectl apply -f ./local-storage.yaml"
 # 创建持久化存储卷和卷声明
-cmd_log "kubectl apply -f ./mysql-pv.yaml"
-cmd_log "kubectl apply -f ./mysql-pvc.yaml"
+# cmd_log "kubectl apply -f ./mysql-pv.yaml"
+# cmd_log "kubectl apply -f ./mysql-pvc.yaml"
 cmd_log "kubectl apply -f ./public-pv.yaml"
 cmd_log "kubectl apply -f ./public-pvc.yaml"
 # 创建ConfigMap

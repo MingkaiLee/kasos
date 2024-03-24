@@ -19,7 +19,10 @@ cmd_log() {
     eval $cmd
 }
 
-build_image "../../example/measure" "example-measure" "v0.1"
+# 切换docker环境
+eval $(minikube -p minikube docker-env)
+
+build_image "../../examples/measure" "example-measure" "v0.1"
 
 cmd_log "kubectl apply -f ./measure-deployment.yaml"
 cmd_log "kubectl apply -f ./measure-service.yaml"

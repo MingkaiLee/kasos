@@ -26,7 +26,7 @@ func InitHTTPClient() {
 }
 
 func CallListHpaServices(ctx context.Context, index int) (response *http.Response, err error) {
-	url := fmt.Sprintf("%s/%s?index=%d", config.ServerUrl, "/service-manager/list", index)
+	url := fmt.Sprintf("%s/%s?index=%d", config.ServerUrl, "service-manager/list", index)
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		util.LogErrorf("http.CallListHpaServices error: %s", err)
@@ -38,7 +38,7 @@ func CallListHpaServices(ctx context.Context, index int) (response *http.Respons
 }
 
 func CallFindHpaService(ctx context.Context, serviceName string) (response *http.Response, err error) {
-	url := fmt.Sprintf("%s/%s?name=%s", config.ServerUrl, "/service-manager/find", serviceName)
+	url := fmt.Sprintf("%s/%s?name=%s", config.ServerUrl, "service-manager/find", serviceName)
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		util.LogErrorf("http.CallFindHpaService error: %v", err)
@@ -62,7 +62,7 @@ func CallReportThresh(ctx context.Context, req *ReportThreshRequest) (response *
 		util.LogErrorf("http.CallReportThresh error: %v", err)
 		return
 	}
-	url := fmt.Sprintf("%s/%s", config.ServerUrl, "/service-manager/report-thresh")
+	url := fmt.Sprintf("%s/%s", config.ServerUrl, "service-manager/report-thresh")
 	content, err := jsoniter.Marshal(*req)
 	if err != nil {
 		util.LogErrorf("http.CallReportThresh error: %v", err)

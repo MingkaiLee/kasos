@@ -11,7 +11,7 @@ import (
 
 func initService() {
 	grp := H.Group("/service")
-	grp.POST("/add")
+	grp.POST("/add", AddService)
 }
 
 func AddService(ctx context.Context, c *app.RequestContext) {

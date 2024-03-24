@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"runtime/debug"
 	"sync"
 
 	"github.com/MingkaiLee/kasos/infer-module/util"
@@ -12,8 +13,9 @@ type ParallelInferer struct {
 	services []*Service
 }
 
-func NewParallerInferer(services []HpaService) *ParallelInferer {
+func NewParallelInferer(services []HpaService) *ParallelInferer {
 	inferer := &ParallelInferer{
+		mu:       sync.Mutex{},
 		services: make([]*Service, 0),
 	}
 	for _, hpaService := range services {
@@ -44,6 +46,12 @@ func (p *ParallelInferer) Infer() {
 
 // 添加新服务
 func (p *ParallelInferer) AddService(serviceName, modelName, tags string) {
+	defer func() {
+		if r := recover(); r != nil {
+			util.LogErrorf("AddService panic: %v", r)
+			util.LogErrorf("Stack trace: %s", string(debug.Stack()))
+		}
+	}()
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	p.services = append(p.services, NewService(serviceName, modelName, tags))

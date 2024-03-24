@@ -7,25 +7,24 @@ import (
 
 type HpaService struct {
 	gorm.Model
-	ServiceName string   `gorm:"column:service_name;type:VARCHAR(128);uniqueIndex"`
-	Tags        string   `gorm:"column:tags;type:VARCHAR(1024);index"`
-	Status      string   `gorm:"column:status;type:VARCHAR(32)"`
-	ThreshQPS   uint     `gorm:"column:thresh_qps;type:BIGINT"`
-	ModelId     uint     `gorm:"column:model_id;type:BIGINT"`
-	ErrorInfo   string   `gorm:"column:error_info;type:VARCHAR(256)"`
-	HpaModel    HpaModel `gorm:"foreignKey:ModelId"`
+	ServiceName string `gorm:"column:service_name;type:VARCHAR(128);uniqueIndex"`
+	Tags        string `gorm:"column:tags;type:VARCHAR(1024)"`
+	Status      string `gorm:"column:status;type:VARCHAR(32)"`
+	ThreshQPS   uint   `gorm:"column:thresh_qps;type:BIGINT"`
+	ModelName   string `gorm:"column:model_name;type:VARCHAR(128)"`
+	ErrorInfo   string `gorm:"column:error_info;type:VARCHAR(256)"`
 }
 
 func (HpaService) TableName() string {
 	return "hpa_service"
 }
 
-func HpaServiceCreate(serviceName string, tags map[string]string, modelId uint) error {
+func HpaServiceCreate(serviceName string, tags map[string]string, modelName string) error {
 	h := &HpaService{
 		ServiceName: serviceName,
 		Tags:        util.ConvertTags(tags),
 		Status:      statusTesting,
-		ModelId:     modelId,
+		ModelName:   modelName,
 	}
 	return db.Create(h).Error
 }
@@ -44,9 +43,7 @@ func HpaServiceChangeModel(serviceName string, modelId uint) error {
 
 func HpaServiceGet(serviceName string) (*HpaService, error) {
 	h := &HpaService{}
-	err := db.Where("service_name = ?", serviceName).Preload("HpaModel", func(db *gorm.DB) *gorm.DB {
-		return db.Select("model_name")
-	}).First(h).Error
+	err := db.Where("service_name = ?", serviceName).First(h).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
@@ -55,9 +52,7 @@ func HpaServiceGet(serviceName string) (*HpaService, error) {
 
 func HpaServiceList(start_idx uint) ([]HpaService, error) {
 	h := make([]HpaService, 0)
-	err := db.Where("status = ? AND id >= ?", statusOk, start_idx).Preload("HpaModel", func(db *gorm.DB) *gorm.DB {
-		return db.Select("model_name")
-	}).Order("id").Limit(PageSize).Find(&h).Error
+	err := db.Where("status = ? AND id >= ?", statusOk, start_idx).Order("id").Limit(PageSize).Find(&h).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
@@ -65,5 +60,7 @@ func HpaServiceList(start_idx uint) ([]HpaService, error) {
 }
 
 func HpaServiceDelete(serviceName string) error {
-	return db.Where("service_name = ?", serviceName).Delete(&HpaService{}).Error
+	return db.Unscoped().Delete(&HpaService{
+		ServiceName: serviceName,
+	}).Error
 }

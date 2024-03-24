@@ -26,9 +26,12 @@ spec:
         - name: public-volume
           mountPath: /mnt
         resources:
+          requests:
+            memory: 256Mi
+            cpu: 500m
           limits:
             memory: 256Mi
-            cpu: 250m
+            cpu: 500m
       volumes:
         - name: public-volume
           persistentVolumeClaim:

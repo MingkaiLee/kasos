@@ -41,6 +41,12 @@ func RegisterModel(ctx context.Context, content []byte) (response *RegisterModel
 		return
 	}
 
+	defer func(e error) {
+		if e != nil {
+			model.HpaModelDelete(req.Name)
+		}
+	}(err)
+
 	modelValidateReq := client.ScriptValidateRequest{
 		ModelName:   req.Name,
 		TrainScript: &req.TrainScript,

@@ -16,7 +16,7 @@ var prometheusClient api.Client
 
 const (
 	qpsQueryStep   = 15
-	qpsQueryPromQL = `rate(request_count{auto_hpa="on",service_name="%s"}[15s])`
+	qpsQueryPromQL = `sum(irate(service_qps{auto_hpa="on",service_name="%s"}[1m])) by (service)`
 )
 
 type SerialDataPoint struct {
@@ -63,6 +63,7 @@ func FetchSerialData(ctx context.Context, startTime, endTime time.Time, serviceN
 	}
 
 	data = make([]SerialDataPoint, len(mat[0].Values))
+	util.LogInfof("data length: %d", len(mat[0].Values))
 
 	for _, v := range mat[0].Values {
 		data = append(data, SerialDataPoint{

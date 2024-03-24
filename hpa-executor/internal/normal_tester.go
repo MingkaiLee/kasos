@@ -143,10 +143,10 @@ func (p *NormalTester) Run() {
 		r := new(StressTestResult)
 		r.ServiceName = p.name
 		// 将结果送入channel中
-		defer func() {
-			util.LogInfof("NormalTester.Run, test finished, result: %+v", r)
-			p.result <- r
-		}()
+		defer func(result *StressTestResult) {
+			util.LogInfof("NormalTester.Run, test finished, result: %+v", result)
+			p.result <- result
+		}(r)
 		// 判断是否已完成初始化
 		if p.request == nil {
 			err := fmt.Errorf("request is nil, please call SetConfigByJSON first")
@@ -185,8 +185,8 @@ func (p *NormalTester) Run() {
 			threshReached := false
 			// 检查rt
 			avgRt := totalRt / successCount
-			if avgRt > 2*p.rt {
-				util.LogInfof("NormalTester.Run, the rt reached the limit")
+			if avgRt > (2 * p.rt) {
+				util.LogInfof("NormalTester.Run, the rt reached the limit, now rt: %v", avgRt)
 				threshReached = true
 			}
 			// 检查错误率

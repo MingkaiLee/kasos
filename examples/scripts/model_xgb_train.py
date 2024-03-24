@@ -29,7 +29,7 @@ def prepare_data(data_path: str) -> list[tuple[float, float]]:
         tmp = [line.strip().split("\t") for line in f.readlines()]
         for timestamp, value in tmp:
             t = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-            t_ref = t.replace(hour=0, minute=0, second=0)
+            t_ref = t.replace(minute=0, second=0)
             diff_sec = (t - t_ref).total_seconds()
             r.append((diff_sec, float(value)))
 

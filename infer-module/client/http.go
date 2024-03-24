@@ -26,7 +26,7 @@ func InitHTTPClient() {
 }
 
 func CallListHpaServices(ctx context.Context, index int) (response *http.Response, err error) {
-	url := fmt.Sprintf("%s/%s?index=%d", config.ServerUrl, "/service-manager/list", index)
+	url := fmt.Sprintf("%s/%s?index=%d", config.ServerUrl, "service-manager/list", index)
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		util.LogErrorf("http.CallListHpaServices error: %s", err)
@@ -38,7 +38,7 @@ func CallListHpaServices(ctx context.Context, index int) (response *http.Respons
 }
 
 func CallFindModel(ctx context.Context, modelName string) (response *http.Response, err error) {
-	url := fmt.Sprintf("%s/%s?name=%s", config.ServerUrl, "/model-manager/find", modelName)
+	url := fmt.Sprintf("%s/%s?name=%s", config.ServerUrl, "model-manager/find", modelName)
 	request, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		util.LogErrorf("http.NewRequest error: %s", err)
@@ -60,7 +60,7 @@ func CallReportQPS(ctx context.Context, req *ReportQPSRequest) (response *http.R
 		util.LogErrorf("http.CallReportQPS error: %v", err)
 		return
 	}
-	url := fmt.Sprintf("%s/%s", config.HpaExecutorUrl, "/hpa-exec/report-qps")
+	url := fmt.Sprintf("%s/%s", config.HpaExecutorUrl, "hpa-exec/report-qps")
 	content, err := jsoniter.Marshal(*req)
 	if err != nil {
 		util.LogErrorf("http.CallReportThresh error: %v", err)
@@ -94,7 +94,7 @@ func CallReportModelValid(ctx context.Context, req *ReportModelValidRequest) (re
 		util.LogErrorf("http.CallReportModelValid error: %v", err)
 		return
 	}
-	url := fmt.Sprintf("%s/%s", config.ServerUrl, "/model-manager/report-valid")
+	url := fmt.Sprintf("%s/%s", config.ServerUrl, "model-manager/report-valid")
 	content, err := jsoniter.Marshal(*req)
 	if err != nil {
 		util.LogErrorf("http.CallReportModelValid error: %v", err)

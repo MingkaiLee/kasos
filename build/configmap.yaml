@@ -3,34 +3,34 @@ kind: ConfigMap
 metadata:
   name: kasos-config
 data:
-  url-conf-json: |-
+  url-conf-json: |
     {
       "server_url": "http://server.default.svc.cluster.local:8080",
       "hpa_executor_url": "http://hpa-executor.default.svc.cluster.local:8080",
       "trainer_url": "",
       "infer_module_url": "http://infer-module.default.svc.cluster.local:8080"
     }
-  db-conf-json: |-
+  db-conf-json: |
     {
       "username": "root",
       "password": "2024kasos",
       "host": "10.96.0.101",
-      "port": "3306",
+      "port": 3306,
       "dbname": "kasos",
-      "charst": "utf8mb4"
+      "charset": "utf8mb4"
     }
-  volume-conf-json: |-
+  volume-conf-json: |
     {
       "mount_path": "/mnt",
       "data_directory": "data",
       "model_directory": "model",
-      "script_directory": "script"
+      "script_directory": "script",
       "validate_data_path": "example/validate_data.csv"
     }
-  module-conf-json: |-
+  module-conf-json: |
     {
       "hpa_executor_conf": {
-        "default_client_timeout": 10,
+        "default_client_timeout": 10000,
         "rt_test_epoch": 20,
         "max_qps": 10000,
         "error_tolerate_rate": 0.05

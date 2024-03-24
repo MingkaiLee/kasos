@@ -13,7 +13,7 @@ func InitInternal() {
 		// 如果拉取失败, 上报错误日志, 服务仍会启动
 		util.LogErrorf("init internal error: %v", err)
 	}
-	parallelInferer := NewParallerInferer(svcs)
-	InferCronJob := NewCronJob(15, parallelInferer)
+	parallelInferer := NewParallelInferer(svcs)
+	InferCronJob = NewCronJob(15, parallelInferer)
 	InferCronJob.Start()
 }

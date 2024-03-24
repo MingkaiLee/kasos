@@ -6,11 +6,9 @@ import (
 	"io"
 	"os"
 	"sort"
-	"sync"
 	"time"
 
 	"github.com/MingkaiLee/kasos/trainer/client"
-	"github.com/MingkaiLee/kasos/trainer/config"
 	"github.com/MingkaiLee/kasos/trainer/util"
 )
 
@@ -112,66 +110,83 @@ func mergeData(finalFileName string, subFiles []string) (err error) {
 	return
 }
 
-func (worker *FetchDataWorker) Run() (err error) {
+func (worker *FetchDataWorker) Run(dirName string) (err error) {
 	util.LogInfof("internal.FetchDataWorker.Run: start to fetch data of service %s", worker.serviceName)
+	// 测试版的训练周期是1小时
 	ctx := context.Background()
-	timeInterval := 24 / worker.workerNumber
-	if (timeInterval % worker.workerNumber) > 0 {
-		timeInterval++
-	}
-	// 开始时间, 以小时为单位, 0-24
-	startInHour := 0
-	year, month, day := worker.date.Date()
-	finalFileName := fmt.Sprintf("%s/%d-%d-%d/%s.csv",
-		config.DataDirectory,
-		year, month, day,
-		worker.serviceName,
-	)
-	subFiles := make([]string, 0, worker.workerNumber)
-	var g sync.WaitGroup
-	var mu sync.Mutex
-	for i := 0; startInHour < 24; i++ {
-		g.Add(1)
-		st := startInHour
-		et := startInHour + timeInterval
-		if et > 24 {
-			et = 24
-		}
-		startInHour = et
-		go func(start, end, idx int) {
-			defer g.Done()
-			// 并发查询与写文件
-			startTime := worker.date.Add(time.Duration(start) * time.Hour)
-			endTime := worker.date.Add(time.Duration(end) * time.Hour)
-			serialData, err := client.FetchSerialData(ctx, startTime, endTime, worker.serviceName)
-			if err != nil {
-				util.LogErrorf("internal.FetchDataWorker.Run goroutine error: %v", err)
-				return
-			}
-			fileName := fmt.Sprintf("%s/%d-%d-%d/%s_%d.csv",
-				config.DataDirectory,
-				year, month, day,
-				worker.serviceName,
-				idx,
-			)
-			err = serialDataSave(serialData, fileName)
-			if err != nil {
-				util.LogErrorf("internal.FetchDataWorker.Run goroutine error: %v", err)
-				return
-			}
-			// 防止写冲突
-			mu.Lock()
-			subFiles = append(subFiles, fileName)
-			mu.Unlock()
-		}(st, et, i)
-	}
-	g.Wait()
-	// 合并文件
-	err = mergeData(finalFileName, subFiles)
+	finalFileName := fmt.Sprintf("%s/%s.csv", dirName, worker.serviceName)
+	// 时间段的中止时间为当前时间截断到小时
+	endTime := worker.date.Truncate(time.Hour)
+	// 时间段的开始时间为结束时间减去1小时
+	startTime := endTime.Add(-time.Hour)
+	endTime = endTime.Add(-15 * time.Second)
+	// 开始拉取数据
+	serialData, err := client.FetchSerialData(ctx, startTime, endTime, worker.serviceName)
 	if err != nil {
 		util.LogErrorf("internal.FetchDataWorker.Run error: %v", err)
 		return
 	}
-	util.LogInfof("internal.FetchDataWorker.Run: fetch data of service %s done, saved to %s", worker.serviceName, finalFileName)
+	// 保存数据
+	err = serialDataSave(serialData, finalFileName)
+
 	return
+	// timeInterval := 24 / worker.workerNumber
+	// if (timeInterval % worker.workerNumber) > 0 {
+	// 	timeInterval++
+	// }
+	// // 开始时间, 以小时为单位, 0-24
+	// startInHour := 0
+	// year, month, day := worker.date.Date()
+	// finalFileName := fmt.Sprintf("%s/%d-%d-%d/%s.csv",
+	// 	config.DataDirectory,
+	// 	year, month, day,
+	// 	worker.serviceName,
+	// )
+	// subFiles := make([]string, 0, worker.workerNumber)
+	// var g sync.WaitGroup
+	// var mu sync.Mutex
+	// for i := 0; startInHour < 24; i++ {
+	// 	g.Add(1)
+	// 	st := startInHour
+	// 	et := startInHour + timeInterval
+	// 	if et > 24 {
+	// 		et = 24
+	// 	}
+	// 	startInHour = et
+	// 	go func(start, end, idx int) {
+	// 		defer g.Done()
+	// 		// 并发查询与写文件
+	// 		startTime := worker.date.Add(time.Duration(start) * time.Hour)
+	// 		endTime := worker.date.Add(time.Duration(end) * time.Hour)
+	// 		serialData, err := client.FetchSerialData(ctx, startTime, endTime, worker.serviceName)
+	// 		if err != nil {
+	// 			util.LogErrorf("internal.FetchDataWorker.Run goroutine error: %v", err)
+	// 			return
+	// 		}
+	// 		fileName := fmt.Sprintf("%s/%d-%d-%d/%s_%d.csv",
+	// 			config.DataDirectory,
+	// 			year, month, day,
+	// 			worker.serviceName,
+	// 			idx,
+	// 		)
+	// 		err = serialDataSave(serialData, fileName)
+	// 		if err != nil {
+	// 			util.LogErrorf("internal.FetchDataWorker.Run goroutine error: %v", err)
+	// 			return
+	// 		}
+	// 		// 防止写冲突
+	// 		mu.Lock()
+	// 		subFiles = append(subFiles, fileName)
+	// 		mu.Unlock()
+	// 	}(st, et, i)
+	// }
+	// g.Wait()
+	// // 合并文件
+	// err = mergeData(finalFileName, subFiles)
+	// if err != nil {
+	// 	util.LogErrorf("internal.FetchDataWorker.Run error: %v", err)
+	// 	return
+	// }
+	// util.LogInfof("internal.FetchDataWorker.Run: fetch data of service %s done, saved to %s", worker.serviceName, finalFileName)
+	// return
 }

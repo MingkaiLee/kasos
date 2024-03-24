@@ -62,8 +62,9 @@ func CreateMonitorService(ctx context.Context, serviceName string, tags map[stri
 		Spec: monitorv1.ServiceMonitorSpec{
 			Endpoints: []monitorv1.Endpoint{
 				{
-					Port: "service",
-					Path: "/metrics",
+					Port:     "service",
+					Path:     "/metrics",
+					Interval: monitorv1.Duration("5s"),
 				},
 			},
 			NamespaceSelector: monitorv1.NamespaceSelector{

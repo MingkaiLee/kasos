@@ -29,9 +29,12 @@ def prepare_data(data_path: str) -> list[tuple[float, float]]:
     r = list()
     with open(data_path, "r") as f:
         tmp = [line.strip().split("\t") for line in f.readlines()]
-        for timestamp, value in tmp:
+        startIdx = 0
+        while len(tmp[startIdx]) < 2:
+            startIdx += 1
+        for timestamp, value in tmp[startIdx:]:
             t = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-            t_ref = t.replace(hour=0, minute=0, second=0)
+            t_ref = t.replace(minute=0, second=0)
             diff_sec = (t - t_ref).total_seconds()
             r.append((diff_sec, float(value)))
 
@@ -89,7 +92,7 @@ class lstm(nn.Module):
         return predictions[-1]
 
 
-qps_scale = 100
+qps_scale = 20
 epochs = 100
 
 if __name__ == "__main__":

@@ -23,8 +23,9 @@ func main() {
 	currentTime := time.Now()
 	// 创建拉取数据的目标文件夹
 	year, month, day := currentTime.Date()
-	fileDirName := fmt.Sprintf("%s/%d-%d-%d", config.DataDirectory, year, month, day)
-	err = os.MkdirAll(fileDirName, 0755)
+	hour := currentTime.Hour()
+	fileDirName := fmt.Sprintf("%s/%d-%d-%d-%d", config.DataDirectory, year, month, day, hour)
+	err = os.MkdirAll(fileDirName, 0777)
 	if err != nil {
 		util.LogErrorf("process stopped, error: %v", err)
 		panic(err)
@@ -35,7 +36,7 @@ func main() {
 	for idx := range services {
 		worker := internal.NewFetchDataWorker(runtime.NumCPU(), *services[idx].Name, currentTime)
 		// 内部并行拉取数据
-		err = worker.Run()
+		err = worker.Run(fileDirName)
 		if err != nil {
 			util.LogErrorf("fetch data error, service: %s", *services[idx].Name)
 			// 拉取数据有误取消训练标志置位
@@ -48,7 +49,7 @@ func main() {
 		// 由于训练时CPU密集型操作, 不再开启goroutine处理
 		if !disableTrains[idx] {
 			trainer := internal.NewTrainer(*services[idx].Name, *services[idx].ModelName, currentTime)
-			err = trainer.Train()
+			err = trainer.Train(fileDirName)
 			if err != nil {
 				util.LogErrorf("train error, service: %s, error: %v", *services[idx].Name, err)
 			}

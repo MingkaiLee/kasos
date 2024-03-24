@@ -25,24 +25,26 @@ func FetchSerialData(ctx context.Context, content []byte) (response *FetchSerial
 	var req FetchSerialDataRequest
 	err = jsoniter.Unmarshal(content, &req)
 	response = new(FetchSerialDataResponse)
+	util.LogInfof("fetch serial data request: %+v", req)
 	if err != nil {
 		util.LogErrorf("failed to unmarshal request, error: %v", err)
 		response.Message = err.Error()
 		return
 	}
-	startTime, err := time.Parse(req.StartTime, time.DateTime)
+	startTime, err := time.Parse(time.DateTime, req.StartTime)
 	if err != nil {
 		util.LogErrorf("failed to parse start time, error: %v", err)
 		response.Message = err.Error()
 		return
 	}
-	endTime, err := time.Parse(req.EndTime, time.DateTime)
+	endTime, err := time.Parse(time.DateTime, req.EndTime)
 	if err != nil {
 		util.LogErrorf("failed to parse end time, error: %v", err)
 		response.Message = err.Error()
 		return
 	}
 	tags := util.RevertTags(req.Tags)
+	util.LogInfof("start: %v, end: %v, tags: %v", startTime, endTime, tags)
 	data, err := client.FetchSerialData(ctx, startTime, endTime, tags)
 	if err != nil {
 		util.LogErrorf("failed to fetch serial data, error: %v", err)

@@ -60,5 +60,7 @@ func HpaModelList(start_idx uint) ([]HpaModel, error) {
 }
 
 func HpaModelDelete(modelName string) error {
-	return db.Where("model_name = ?", modelName).Delete(&HpaModel{}).Error
+	return db.Unscoped().Delete(&HpaModel{
+		ModelName: modelName,
+	}).Error
 }

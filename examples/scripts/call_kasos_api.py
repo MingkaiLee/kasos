@@ -1,6 +1,6 @@
 import requests
 
-HOST_PORT = "http://localhost:10168"
+HOST_PORT = "http://127.0.0.1:50924"
 
 
 def service_find(name: str):
@@ -21,7 +21,7 @@ def list_services(index: int):
     return response.json()
 
 
-def register_service(name: str, tags: map[str, str], model_name: str):
+def register_service(name: str, tags: dict[str, str], model_name: str):
     response = requests.post(f"{HOST_PORT}/service-manager/register",
                              json={
                                  "name": name,
@@ -76,8 +76,8 @@ def register_model(name: str, train_script: str, infer_script: str):
     response = requests.post(f"{HOST_PORT}/model-manager/register",
                              json={
                                  "name": name,
-                                 "trainScript": train_script,
-                                 "inferScript": infer_script
+                                 "train_script": train_script,
+                                 "infer_script": infer_script
                              })
     if response.status_code != 200:
         raise Exception(
@@ -107,4 +107,28 @@ def fetch_data(start_time: str, end_time: str, tags: str):
         raise Exception(
             f"call kasos api /data-manager/fetch failed, code: {response.status_code}, msg: {response.text}"
         )
+    print(response.headers)
     return response.json()
+
+if __name__ == "__main__":
+    # with open("./model_lstm_train.py", "r") as f:
+    #     train_script = f.read()
+    # with open("./model_lstm_infer.py", "r") as f:
+    #     infer_script = f.read()
+    # resp = register_model("lstm", train_script, infer_script)
+    # print(resp)
+
+    # resp = list_models(0)
+    # print(resp)
+
+    # resp = register_service("measure", {"auto_hpa": "on", "service_name": "measure"}, "lstm")
+    # print(resp)
+
+    resp = list_services(0)
+    print(resp)
+
+    # resp = delete_service("measure")
+    # print(resp)
+
+    # resp = fetch_data("2024-03-21 09:00:00", "2024-03-21 12:00:00", 'auto_hpa="on",service_name="measure"')
+    # print(resp)

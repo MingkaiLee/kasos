@@ -3,7 +3,6 @@ package internal
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"time"
@@ -125,10 +124,16 @@ func (s *ScriptValidator) Run() {
 		// 首次训练测试
 		// 创建一个模型文件的路径
 		modelPath := fmt.Sprintf("%s/tmp/%s", config.ModelDirectory, uuid.NewString())
+		// 结束时删除临时模型文件
+		defer func() {
+			os.Remove(modelPath)
+		}()
 		firstTrainCmd := exec.Command("python3", trainScriptFile.Name(), "--new", "-d", config.ValidateDataPath, "-m", modelPath)
 		err = firstTrainCmd.Run()
 		if err != nil {
 			r.Err = err
+			output, _ := firstTrainCmd.CombinedOutput()
+			util.LogErrorf("internal.ScriptValidator.Run: command output: %s", string(output))
 			util.LogErrorf("internal.ScriptValidator.Run: first train error: %v", err)
 			return
 		}
@@ -137,6 +142,8 @@ func (s *ScriptValidator) Run() {
 		err = furtherTrainCmd.Run()
 		if err != nil {
 			r.Err = err
+			output, _ := furtherTrainCmd.CombinedOutput()
+			util.LogErrorf("internal.ScriptValidator.Run: command output: %s", string(output))
 			util.LogErrorf("internal.ScriptValidator.Run: further train error: %v", err)
 			return
 		}
@@ -145,6 +152,8 @@ func (s *ScriptValidator) Run() {
 		err = inferCmd.Run()
 		if err != nil {
 			r.Err = err
+			output, _ := inferCmd.CombinedOutput()
+			util.LogErrorf("internal.ScriptValidator.Run: command output: %s", string(output))
 			util.LogErrorf("internal.ScriptValidator.Run: infer error: %v", err)
 			return
 		}
@@ -165,16 +174,16 @@ func (s *ScriptValidator) Run() {
 			return
 		}
 		defer inferFormalFile.Close()
-		_, err = io.Copy(trainFormalFile, trainScriptFile)
+		_, err = trainFormalFile.WriteString(*s.trainScript)
 		if err != nil {
 			r.Err = err
-			util.LogErrorf("internal.ScriptValidator.Run: copy train script error: %v", err)
+			util.LogErrorf("internal.ScriptValidator.Run: write train script error: %v", err)
 			return
 		}
-		_, err = io.Copy(inferFormalFile, inferScriptFile)
+		_, err = inferFormalFile.WriteString(*s.inferScript)
 		if err != nil {
 			r.Err = err
-			util.LogErrorf("internal.ScriptValidator.Run: copy infer script error: %v", err)
+			util.LogErrorf("internal.ScriptValidator.Run: write infer script error: %v", err)
 			return
 		}
 	}()

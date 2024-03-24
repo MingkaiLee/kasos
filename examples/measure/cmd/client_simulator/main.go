@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"math"
@@ -24,9 +25,9 @@ var (
 const timeStep = 15
 
 func init() {
-	flag.StringVar(&url, "url", "http://localhost:10188/stress-test", "url of the service")
-	flag.StringVar(&qpsFile, "qps", "", "qps file")
-	flag.StringVar(&logOutput, "log", "", "log file")
+	flag.StringVar(&url, "url", "http://127.0.0.1:50919/stress-test", "url of the service")
+	flag.StringVar(&qpsFile, "qps", "./qps_simulator.csv", "qps file")
+	flag.StringVar(&logOutput, "log", "./test.log", "log file")
 	flag.Parse()
 	logFile, err := os.OpenFile(logOutput, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
@@ -42,11 +43,11 @@ func init() {
 func parallelGet(parallel int) {
 	for i := 0; i < parallel; i++ {
 		go func() {
-			for {
-				_, err := client.Get(url)
-				if err != nil {
-					logger.Println(err)
-				}
+			_, err := client.Get(url)
+			if err != nil {
+				logger.Println(err)
+			} else {
+				logger.Println("success")
 			}
 		}()
 	}
@@ -55,8 +56,9 @@ func parallelGet(parallel int) {
 func qpsControl(qpsList []int) {
 	for {
 		t := <-secondTicker.C
-		diff := t.Sub(time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location()))
+		diff := t.Sub(time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), 0, 0, 0, t.Location()))
 		qps := qpsList[diff/(timeStep*time.Second)]
+		fmt.Printf("%s -> qps: %d\n", t.Format(time.DateTime), qps)
 		go parallelGet(qps)
 	}
 }
@@ -85,5 +87,5 @@ func genQpsList(qpsFile string) []int {
 
 func main() {
 	qpsList := genQpsList(qpsFile)
-	go qpsControl(qpsList)
+	qpsControl(qpsList)
 }

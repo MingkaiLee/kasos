@@ -16,7 +16,7 @@ var prometheusClient api.Client
 
 const (
 	qpsQueryStep   = 15
-	qpsQueryPromQL = `rate(service_qps{%s}[15s])`
+	qpsQueryPromQL = `sum(irate(service_qps{%s}[1m])) by (service)`
 )
 
 type SerialDataPoint struct {
@@ -37,6 +37,7 @@ func InitPrometheusClient() {
 }
 
 func FetchSerialData(ctx context.Context, startTime, endTime time.Time, tags map[string]string) (data map[string][]SerialDataPoint, err error) {
+	util.LogInfof("start fetch serial data")
 	v1api := v1.NewAPI(prometheusClient)
 	rng := v1.Range{
 		Start: startTime,
@@ -68,6 +69,36 @@ func FetchSerialData(ctx context.Context, startTime, endTime time.Time, tags map
 			})
 			data[stream.Metric.String()] = d
 		}
+	}
+	return
+}
+
+// 查询服务的qps实时数据点
+func RealTimeData(ctx context.Context, tagStr string) (data SerialDataPoint, err error) {
+	v1api := v1.NewAPI(prometheusClient)
+	query := fmt.Sprintf(qpsQueryPromQL, tagStr)
+	util.LogInfof("query: %s", query)
+	currentTime := time.Now()
+	result, warnings, err := v1api.Query(ctx, query, currentTime)
+	if err != nil {
+		util.LogErrorf("query: %s, error: %v", query, err)
+		return
+	}
+	if len(warnings) > 0 {
+		util.LogInfof("warnings: %+v", warnings)
+	}
+	value, ok := result.(model.Vector)
+	if !ok {
+		util.LogErrorf("result is not scalar, result type: %s", result.Type().String())
+		return
+	}
+	if value.Len() == 0 {
+		util.LogErrorf("result is empty")
+		return
+	}
+	data = SerialDataPoint{
+		Timestamp: value[0].Timestamp.Time().Format(time.DateTime),
+		Value:     float64(value[0].Value),
 	}
 	return
 }

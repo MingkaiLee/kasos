@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: trainer
 spec:
-  schedule: "0 * * * *"
+  schedule: "5 * * * *"
   concurrencyPolicy: Forbid
   startingDeadlineSeconds: 1800
   jobTemplate:
@@ -13,9 +13,26 @@ spec:
           containers:
           - name: trainer
             image: kasos-trainer:v0.1
-            command: ["/app"]
+            command: ["/app/app"]
+            volumeMounts:
+            - name: public-volume
+              mountPath: /mnt
+            - name: config-volume
+              mountPath: /etc/config
             resources:
               limits:
                 memory: 2Gi
                 cpu: 2000m
+          volumes:
+          - name: public-volume
+            persistentVolumeClaim:
+              claimName: public-pvc
+          - name: config-volume
+            configMap:
+              name: kasos-config
+              items:
+                - key: "url-conf-json"
+                  path: "url.json"
+                - key: "volume-conf-json"
+                  path: "volume.json"
           restartPolicy: Never

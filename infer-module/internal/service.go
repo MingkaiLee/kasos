@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 
 	"github.com/MingkaiLee/kasos/infer-module/client"
 	"github.com/MingkaiLee/kasos/infer-module/config"
@@ -70,13 +71,22 @@ func (s *Service) Run(ctx context.Context) (err error) {
 func (s *Service) infer(data client.SerialDataPoint) (prediction int, err error) {
 	// 检查模型是否已存在
 	modelFileStat, err := os.Stat(s.modelPath)
+	// 防止有其他逻辑使prediction小于0
+	defer func(p int) {
+		if p < 0 {
+			p = 0
+		}
+	}(prediction)
 	if os.IsNotExist(err) {
 		// 模型不存在, 则使用预测逻辑
+		// 取消错误传出
+		err = nil
 		// 因浮点数的截断问题, 保留1
 		p := int(data.Value) + 1
 		if s.prediction < 0 {
 			// 历史从未作出预测时, 预测值同当前实际值
 			prediction = p
+			s.prediction = prediction
 			util.LogInfof("service.Service.infer, first prediction: %d", prediction)
 			return
 		}
@@ -88,12 +98,14 @@ func (s *Service) infer(data client.SerialDataPoint) (prediction int, err error)
 				// 连续两个周期, 预测值低于实际值, 则累加两个周期的diff
 				prediction = p + diff + s.diff
 				s.diff = diff
+				s.prediction = prediction
 				util.LogInfof("service.Service.infer, prediction: %d", prediction)
 				return
 			} else {
 				// 上个周期的预测值高于实际值, 则只加本周期的diff
 				prediction = p + diff
 				s.diff = diff
+				s.prediction = prediction
 				util.LogInfof("service.Service.infer, prediction: %d", prediction)
 				return
 			}
@@ -102,12 +114,14 @@ func (s *Service) infer(data client.SerialDataPoint) (prediction int, err error)
 				// 上一周期的预测值低于实际值, 则只加本周期的diff
 				prediction = p + diff
 				s.diff = diff
+				s.prediction = prediction
 				util.LogInfof("service.Service.infer, prediction: %d", prediction)
 				return
 			} else {
 				// 连续两个周期, 预测值高于实际值, 则累加两个周期的diff
 				prediction = p + diff + s.diff
 				s.diff = diff
+				s.prediction = prediction
 				util.LogInfof("service.Service.infer, prediction: %d", prediction)
 				return
 			}
@@ -129,6 +143,7 @@ func (s *Service) infer(data client.SerialDataPoint) (prediction int, err error)
 		}
 		// 获取预测值
 		result := out.String()
+		result = strings.Trim(result, "\n")
 		// 将预测值转为float64类型
 		p, e := strconv.ParseFloat(result, 64)
 		if e != nil {
@@ -138,6 +153,8 @@ func (s *Service) infer(data client.SerialDataPoint) (prediction int, err error)
 		}
 		// 保留1
 		prediction = int(p) + 1
+		s.diff = s.prediction - int(data.Value)
+		s.prediction = prediction
 	}
 	return
 }
