@@ -41,6 +41,8 @@ if __name__ == "__main__":
     args = parse_args()
     ob_data = np.array(prepare_data(args.observe)[1:])
     infer_data = np.array(prepare_data(args.data)[:-1])
+    euclidean_distance = np.linalg.norm(ob_data - infer_data)
+    print(f"euclidean distance: {euclidean_distance}")
     distance = dtw.distance(ob_data, infer_data, use_pruning=True)
     print(f"dtw distance: {distance}")
     ob_data_vis = ob_data[start:end]
